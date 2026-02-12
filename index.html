@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Projet AR - Expérience Cinéma</title>
+    
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+      body { margin: 0; overflow: hidden; }
+
+      /* 1. Le Message de départ (Visible uniquement au scan) */
+      #scan-message {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-family: sans-serif;
+        z-index: 10;
+        text-align: center;
+        /* Animation pour que ce soit joli */
+        transition: opacity 0.5s;
+      }
+
+      /* 2. L'Écran Vidéo (Le Mode Cinéma) */
+      #video-overlay {
+        display: none; 
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        
+        /* CHANGEMENT ICI : Fond Noir 100% (pas de transparence) */
+        background: black; 
+        
+        z-index: 9999; 
+        display: flex;
+        align-items: center; 
+        justify-content: center; 
+        flex-direction: column;
+      }
+
+      /* La vidéo elle-même */
+      #video-overlay video {
+        width: 100%; 
+        max-width: 800px; /* Assez grand sur PC */
+        max-height: 80vh; /* Ne dépasse pas la hauteur de l'écran */
+        box-shadow: 0 0 50px rgba(255,255,255,0.1);
+      }
+
+      /* Le bouton fermer */
+      #close-btn {
+        margin-top: 30px;
+        padding: 12px 25px;
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+        border-radius: 30px;
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      
+      #close-btn:hover {
+        background: white;
+        color: black;
+      }
+
+      /* Classe utilitaire pour cacher des éléments proprement */
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div id="scan-message">Visez le cadre pour lancer la cérémonie</div>
+
+    <div id="video-overlay" class="hidden">
+      <video id="myVideo" playsinline webkit-playsinline controls>
+          <source src="./assets/videos/video.mp4" type="video/mp4">
+      </video>
+      <button id="close-btn">Fermer et Scanner à nouveau</button>
+    </div>
+
+    <a-scene 
+      mindar-image="imageTargetSrc: ./assets/targets/targets.mind; uiScanning: yes;" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-entity id="trigger" mindar-image-target="targetIndex: 0"></a-entity>
+    </a-scene>
+
+    <script>
+      const target = document.querySelector('#trigger');
+      const overlay = document.querySelector('#video-overlay');
+      const video = document.querySelector('#myVideo');
+      const scanMessage = document.querySelector('#scan-message');
+      const closeBtn = document.querySelector('#close-btn');
+      
+      // On récupère l'interface de scan (les traits bleus) créée par MindAR
+      // Note : Elle peut mettre une seconde à apparaitre, donc on la cherchera au bon moment
+      
+      let isPlaying = false;
+
+      // FONCTION 1 : Quand on trouve le cadre
+      target.addEventListener("targetFound", event => {
+        if (!isPlaying) {
+          console.log("🎬 Mode Cinéma Activé");
+          isPlaying = true;
+
+          // A. On affiche l'écran noir vidéo
+          overlay.classList.remove('hidden');
+          overlay.style.display = 'flex';
+
+          // B. On cache le message "Visez le cadre"
+          scanMessage.classList.add('hidden');
+
+          // C. On essaie de cacher les traits de scan s'ils sont encore là
+          const scanningUI = document.querySelector('.mindar-ui-scanning');
+          if(scanningUI) scanningUI.classList.add('hidden');
+
+          // D. On lance la vidéo
+          video.currentTime = 0;
+          video.play();
+        }
+      });
+
+      // FONCTION 2 : Quand on clique sur FERMER
+      closeBtn.addEventListener("click", function() {
+        console.log("📸 Retour Caméra");
+        
+        // A. On coupe la vidéo
+        video.pause();
+        
+        // B. On cache l'écran noir
+        overlay.classList.add('hidden');
+        overlay.style.display = 'none';
+        
+        // C. On remet le message "Visez le cadre"
+        scanMessage.classList.remove('hidden');
+
+        // D. On remet les traits de scan
+        const scanningUI = document.querySelector('.mindar-ui-scanning');
+        if(scanningUI) scanningUI.classList.remove('hidden');
+
+        // E. On autorise à rescanner (après une petite pause d'1 seconde pour éviter le rebond immédiat)
+        setTimeout(() => {
+          isPlaying = false;
+        }, 1000);
+      });
+
+    </script>
+
+  </body>
+</html>
