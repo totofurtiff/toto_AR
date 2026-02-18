@@ -1,60 +1,72 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Projet AR - Bali</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Projet AR - Bali Burger Menu</title>
     
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
     <style>
-      body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+      body, html { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; }
+      .a-canvas { width: 100% !important; height: 100% !important; }
 
-      /* --- 1. MENU LANGUES --- */
-      #lang-menu {
+      /* --- MENU BURGER --- */
+      #burger-icon {
+        position: fixed;
+        top: 20px; right: 20px;
+        width: 30px; height: 25px;
+        z-index: 20000;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      #burger-icon span { display: block; height: 4px; width: 100%; background: white; border-radius: 2px; transition: 0.3s; }
+
+      #side-menu {
+        position: fixed;
+        top: 0; right: -250px; width: 250px; height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 19999;
+        transition: 0.4s;
+        display: flex;
+        flex-direction: column;
+        padding-top: 80px;
+        border-left: 1px solid rgba(255,255,255,0.2);
+      }
+      #side-menu.open { right: 0; }
+      #side-menu a {
+        color: white; text-decoration: none; padding: 20px; font-size: 18px;
+        border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase;
+      }
+
+      /* --- ECRANS --- */
+      #welcome-overlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: #000; z-index: 10000;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        color: white; font-family: sans-serif;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;
       }
-      .lang-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 90%; max-width: 400px; margin-top: 20px;
-      }
+
+      .lang-grid { display: grid; grid-template-columns: 1fr; gap: 20px; width: 80%; max-width: 300px; margin-top: 30px; }
       .lang-btn {
-        padding: 12px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.4);
-        border-radius: 15px; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+        padding: 20px; background: rgba(255, 255, 255, 0.1); color: white;
+        border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; font-size: 18px;
+        cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;
       }
-      .lang-btn img { width: 25px; border-radius: 2px; }
+      .lang-btn img { width: 35px; border-radius: 4px; }
 
-      /* --- 2. MESSAGE ET BOUTON SUR LA CAMÉRA --- */
       #scan-message {
-        display: none; 
-        position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 25px;
-        border-radius: 30px; z-index: 9999; text-align: center; width: 80%; font-family: sans-serif;
-      }
-      
-      /* NOUVEAU BOUTON : Retour au menu des langues */
-      #back-to-menu-btn {
-        display: none; 
-        position: absolute; top: 20px; left: 20px;
-        background: rgba(0, 0, 0, 0.6); color: white; border: 1px solid rgba(255,255,255,0.4);
-        padding: 10px 15px; border-radius: 20px; z-index: 9999; cursor: pointer;
-        font-family: sans-serif; font-size: 13px; backdrop-filter: blur(5px);
+        display: none; position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8); color: white; padding: 15px 30px;
+        border-radius: 40px; z-index: 900; text-align: center; width: 80%;
       }
 
-      /* --- 3. VIDÉO --- */
       #video-overlay {
         display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: black; z-index: 9999;
-        flex-direction: column; align-items: center; justify-content: center;
+        background: black; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; 
       }
-      #myVideo { width: 100%; max-width: 800px; max-height: 65vh; }
-      
-      #close-btn {
-        margin-top: 25px; padding: 12px 30px; background: none; color: white; border: 1px solid white;
-        border-radius: 30px; cursor: pointer; text-transform: uppercase; font-family: sans-serif;
-      }
+      video { width: 100%; max-height: 80vh; background: #000; }
 
       .hidden { display: none !important; }
     </style>
@@ -62,115 +74,97 @@
 
   <body>
 
-    <div id="lang-menu">
-      <h2 style="font-weight: 300; letter-spacing: 1px;">WELCOME / BIENVENUE</h2>
+    <div id="burger-icon" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+
+    <div id="side-menu">
+      <a href="#" onclick="navTo('home')">🏠 Home / Langues</a>
+      <a href="#" onclick="navTo('scan')">📷 Scan AR</a>
+      <a href="#" onclick="navTo('video')">🎬 Voir Vidéo</a>
+    </div>
+
+    <div id="welcome-overlay">
+      <h2 style="font-weight: 300; letter-spacing: 2px;">SELECT LANGUAGE</h2>
       <div class="lang-grid">
-        <button class="lang-btn" onclick="startCamera('fr')"><img src="https://flagcdn.com/w40/fr.png"> Français</button>
-        <button class="lang-btn" onclick="startCamera('en')"><img src="https://flagcdn.com/w40/us.png"> English</button>
-        <button class="lang-btn" onclick="startCamera('es')"><img src="https://flagcdn.com/w40/es.png"> Español</button>
-        <button class="lang-btn" onclick="startCamera('it')"><img src="https://flagcdn.com/w40/it.png"> Italiano</button>
-        <button class="lang-btn" onclick="startCamera('de')"><img src="https://flagcdn.com/w40/de.png"> Deutsch</button>
-        <button class="lang-btn" onclick="startCamera('pt')"><img src="https://flagcdn.com/w40/pt.png"> Português</button>
-        <button class="lang-btn" onclick="startCamera('el')"><img src="https://flagcdn.com/w40/gr.png"> Ελληνικά</button>
-        <button class="lang-btn" onclick="startCamera('ru')"><img src="https://flagcdn.com/w40/ru.png"> Русский</button>
-        <button class="lang-btn" onclick="startCamera('ja')"><img src="https://flagcdn.com/w40/jp.png"> 日本語</button>
-        <button class="lang-btn" onclick="startCamera('zh')"><img src="https://flagcdn.com/w40/cn.png"> 普通话</button>
+        <button class="lang-btn" onclick="setLanguageAndStart('fr')"><img src="https://flagcdn.com/w40/fr.png"> Français</button>
+        <button class="lang-btn" onclick="setLanguageAndStart('en')"><img src="https://flagcdn.com/w40/us.png"> English</button>
       </div>
     </div>
 
-    <button id="back-to-menu-btn" onclick="window.location.reload();"></button>
     <div id="scan-message"></div>
 
     <div id="video-overlay">
-      <video id="myVideo" playsinline webkit-playsinline controls loop>
-          <source id="videoSource" src="" type="video/mp4">
-      </video>
-      <button id="close-btn"></button>
+      <video id="myVideo" playsinline controls loop></video>
+      <p style="color: white; margin-top: 10px; font-size: 12px; opacity: 0.5;">Use menu to go back</p>
     </div>
 
     <a-scene 
-      mindar-image="imageTargetSrc: ./assets/targets/targets.mind; autoStart: false; uiScanning: yes;" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
+      id="ar-scene"
+      mindar-image="imageTargetSrc: ./assets/targets/targets.mind; autoStart: false; uiScanning: no;" 
+      embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      <a-entity id="trigger" mindar-image-target="targetIndex: 0"></a-entity>
+      <a-entity id="target0" mindar-image-target="targetIndex: 0"></a-entity>
     </a-scene>
 
     <script>
-      const langMenu = document.querySelector('#lang-menu');
-      const scanMessage = document.querySelector('#scan-message');
-      const backToMenuBtn = document.querySelector('#back-to-menu-btn');
+      const welcome = document.querySelector('#welcome-overlay');
+      const scanMsg = document.querySelector('#scan-message');
       const videoOverlay = document.querySelector('#video-overlay');
       const video = document.querySelector('#myVideo');
-      const videoSource = document.querySelector('#videoSource');
-      const closeBtn = document.querySelector('#close-btn');
-      const target = document.querySelector('#trigger');
-      const sceneEl = document.querySelector('a-scene');
+      const sideMenu = document.querySelector('#side-menu');
+      const sceneEl = document.querySelector('#ar-scene');
       
-      let userLang = ''; 
-      let isPlaying = false;
+      let userLang = 'en';
+      let videoLoaded = false;
 
-      // J'ai ajouté la traduction pour le bouton de retour au menu
-      const translations = {
-        'fr': { scan: 'Visez l\'image pour commencer', back: 'Retour au scan', menu: '🌍 Langues' },
-        'en': { scan: 'Please scan the image to start', back: 'Back to scan', menu: '🌍 Languages' },
-        'es': { scan: 'Escanee la imagen para comenzar', back: 'Volver al escaneo', menu: '🌍 Idiomas' },
-        'it': { scan: 'Scansiona l\'immagine per iniziare', back: 'Torna alla scansione', menu: '🌍 Lingue' },
-        'de': { scan: 'Bitte scannen Sie das Bild, um zu starten', back: 'Zurück zum Scan', menu: '🌍 Sprachen' },
-        'pt': { scan: 'Digitalize a imagem para começar', back: 'Voltar à digitalização', menu: '🌍 Idiomas' },
-        'el': { scan: 'Παρακαλώ σάρωσε την εικόνα για έναρξη', back: 'Επιστροφή στη σάρωση', menu: '🌍 Γλώσσες' },
-        'ru': { scan: 'Отсканируйте изображение, чтобы начать', back: 'Вернуться к сканированию', menu: '🌍 Языки' },
-        'ja': { scan: 'スキャンを開始してください', back: 'スキャンに戻る', menu: '🌍 言語' },
-        'zh': { scan: '请扫描图像开始', back: '返回扫描', menu: '🌍 语言' }
+      const texts = {
+        'fr': { scan: 'Visez l\'image pour commencer' },
+        'en': { scan: 'Scan the image to start' }
       };
 
-      function startCamera(lang) {
-        userLang = lang; 
-        
-        scanMessage.innerText = translations[lang].scan;
-        closeBtn.innerText = translations[lang].back;
-        backToMenuBtn.innerText = translations[lang].menu; // Applique le texte du menu
-        
-        langMenu.style.display = 'none';
-        scanMessage.style.display = 'block';
-        backToMenuBtn.style.display = 'block'; // Affiche le bouton retour
+      // MENU LOGIQUE
+      function toggleMenu() { sideMenu.classList.toggle('open'); }
 
-        sceneEl.systems["mindar-image-system"].start();
+      function navTo(page) {
+        toggleMenu();
+        video.pause();
+        videoOverlay.style.display = 'none';
+        scanMsg.style.display = 'none';
+        welcome.classList.add('hidden');
 
-        setTimeout(() => {
-          window.dispatchEvent(new Event('resize'));
-        }, 500);
+        if(page === 'home') {
+          location.reload(); // Plus propre pour réinitialiser totalement l'AR
+        } else if (page === 'scan') {
+          scanMsg.style.display = 'block';
+        } else if (page === 'video') {
+          if(videoLoaded) {
+            videoOverlay.style.display = 'flex';
+            video.play();
+          } else {
+            alert(userLang === 'fr' ? "Veuillez d'abord scanner une image" : "Please scan an image first");
+            scanMsg.style.display = 'block';
+          }
+        }
       }
 
-      target.addEventListener("targetFound", () => {
-        if (!isPlaying && userLang !== '') {
-          isPlaying = true;
+      // INITIALISATION
+      function setLanguageAndStart(lang) {
+        userLang = lang;
+        welcome.classList.add('hidden');
+        scanMsg.innerText = texts[lang].scan;
+        scanMsg.style.display = 'block';
+        sceneEl.systems['mindar-image-system'].start(); 
+      }
 
-          scanMessage.style.display = 'none';
-          backToMenuBtn.style.display = 'none'; // On cache le bouton pendant la vidéo
-          const ui = document.querySelector('.mindar-ui-scanning');
-          if(ui) ui.classList.add('hidden');
-
-          videoSource.src = `./assets/videos/video_${userLang}.mp4`;
-          video.load(); 
-          videoOverlay.style.display = 'flex';
-          video.play();
-        }
-      });
-
-      closeBtn.addEventListener("click", () => {
-        video.pause();
-        videoSource.src = ""; 
+      // DETECTION
+      document.querySelector('#target0').addEventListener("targetFound", () => {
+        scanMsg.style.display = 'none';
+        video.src = `./assets/videos/video_${userLang}.mp4`;
+        videoOverlay.style.display = 'flex';
         video.load();
-
-        videoOverlay.style.display = 'none';
-        scanMessage.style.display = 'block';
-        backToMenuBtn.style.display = 'block'; // On remet le bouton quand on revient à la caméra
-
-        const ui = document.querySelector('.mindar-ui-scanning');
-        if(ui) ui.classList.remove('hidden');
-
-        setTimeout(() => { isPlaying = false; }, 1000);
+        video.play();
+        videoLoaded = true;
       });
     </script>
   </body>
