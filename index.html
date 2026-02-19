@@ -2,169 +2,408 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Projet AR - Bali Burger Menu</title>
+    <title>Projet AR Bali - Auth Sécurisée & Galerie</title>
     
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
     <style>
-      body, html { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; }
-      .a-canvas { width: 100% !important; height: 100% !important; }
+      /* --- BASE & CAMÉRA --- */
+      body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; font-family: 'Montserrat', sans-serif; }
+      a-scene { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; }
+      .a-canvas { background: transparent !important; z-index: 1 !important; }
+      .mindar-ui-overlay, .mindar-ui-loading, .mindar-ui-compatibility { display: none !important; }
+
+      /* --- PAGE D'AUTHENTIFICATION --- */
+      #auth-page {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: url('https://images.unsplash.com/photo-1537996194458-132d0db3b3b2?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
+        z-index: 60000; display: flex; align-items: center; justify-content: center;
+      }
+      .auth-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.9) 100%); }
+      
+      .auth-box {
+        position: relative; z-index: 1; background: rgba(255, 255, 255, 0.1);
+        padding: 40px 30px; border-radius: 20px; text-align: center; color: white;
+        backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2);
+        width: 85%; max-width: 350px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      }
+      .auth-box h2 { font-family: 'Playfair Display', serif; font-size: 2em; margin-bottom: 25px; letter-spacing: 1px; }
+      
+      .auth-input {
+        width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.3); color: white;
+        font-family: 'Montserrat', sans-serif; font-size: 14px; box-sizing: border-box; outline: none; transition: 0.3s;
+      }
+      .auth-input::placeholder { color: rgba(255,255,255,0.6); }
+      .auth-input:focus { border-color: #FFB75E; background: rgba(0,0,0,0.5); }
+      
+      .auth-switch { margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.7); cursor: pointer; text-decoration: underline; transition: 0.3s; }
+      .auth-switch:hover { color: white; }
+
+      /* --- LANDING PAGE SCROLLABLE --- */
+      #presentation-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fdfaf6; z-index: 40000; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+      .hero-section { position: relative; height: 100vh; min-height: 600px; background: url('https://images.unsplash.com/photo-1537996194458-132d0db3b3b2?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
+      .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%); }
+      .hero-content { position: relative; z-index: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+      .logo-placeholder { width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid rgba(255,255,255,0.5); backdrop-filter: blur(5px); }
+      .hero-content h1 { font-family: 'Playfair Display', serif; font-size: 3.5em; letter-spacing: 2px; margin-bottom: 15px; font-weight: 700; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+      .hero-content p { font-size: 1.2em; line-height: 1.5; max-width: 600px; margin-bottom: 40px; font-weight: 300; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+
+      .start-btn { padding: 18px 50px; background: linear-gradient(45deg, #FFB75E, #ED8F03); color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(237, 143, 3, 0.5); transition: transform 0.3s, box-shadow 0.3s; width: 100%; }
+      .start-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(237, 143, 3, 0.6); }
+      .start-btn:active { transform: scale(0.98); }
+      #presentation-page .start-btn { width: auto; }
+
+      /* Contenu explicatif */
+      .content-section { display: flex; flex-wrap: wrap; align-items: center; padding: 80px 5%; max-width: 1200px; margin: 0 auto; gap: 40px; }
+      .content-section.reverse { flex-direction: row-reverse; }
+      .text-box { flex: 1 1 400px; color: #333; }
+      .text-box h2 { font-family: 'Playfair Display', serif; font-size: 2.2em; color: #1a4a38; margin-bottom: 20px; }
+      .text-box p { font-size: 1.1em; line-height: 1.8; color: #555; margin-bottom: 15px; }
+      .img-box { flex: 1 1 400px; }
+      .img-box img { width: 100%; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); object-fit: cover; }
+      .cta-section { background: #1a4a38; color: white; text-align: center; padding: 80px 20px; }
+      .cta-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5em; margin-bottom: 30px; }
 
       /* --- MENU BURGER --- */
-      #burger-icon {
-        position: fixed;
-        top: 20px; right: 20px;
-        width: 30px; height: 25px;
-        z-index: 20000;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
-      #burger-icon span { display: block; height: 4px; width: 100%; background: white; border-radius: 2px; transition: 0.3s; }
-
-      #side-menu {
-        position: fixed;
-        top: 0; right: -250px; width: 250px; height: 100%;
-        background: rgba(0, 0, 0, 0.95);
-        z-index: 19999;
-        transition: 0.4s;
-        display: flex;
-        flex-direction: column;
-        padding-top: 80px;
-        border-left: 1px solid rgba(255,255,255,0.2);
+      #burger-icon { position: fixed; top: 20px; right: 20px; width: 30px; height: 25px; z-index: 50000; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
+      #burger-icon span { display: block; height: 4px; width: 100%; background: white; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+      
+      /* CORRECTION CSS DU MENU : box-sizing et overflow ajoutés pour ne jamais cacher le bas */
+      #side-menu { 
+        position: fixed; top: 0; right: -260px; width: 250px; height: 100vh; 
+        background: rgba(20, 40, 40, 0.95); z-index: 49999; transition: 0.4s; 
+        display: flex; flex-direction: column; padding-top: 80px; 
+        border-left: 1px solid rgba(255,255,255,0.1);
+        box-sizing: border-box; overflow-y: auto; 
       }
       #side-menu.open { right: 0; }
-      #side-menu a {
-        color: white; text-decoration: none; padding: 20px; font-size: 18px;
-        border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase;
-      }
+      #side-menu a { color: white; text-decoration: none; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase; font-weight: 300; font-size: 15px; }
 
-      /* --- ECRANS --- */
-      #welcome-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: #000; z-index: 10000;
-        display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;
-      }
+      /* --- ÉCRANS UI --- */
+      #welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 25000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; }
+      .lang-btn { padding: 18px; width: 220px; background: rgba(255,255,255,0.1); color: white; margin: 10px; border: 1px solid white; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
+      .lang-btn:hover { background: rgba(255,255,255,0.2); }
+      #scan-message { display: none; position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); background: rgba(0, 50, 50, 0.8); color: white; padding: 12px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.3); z-index: 2000; text-align: center; pointer-events: none; white-space: nowrap; }
 
-      .lang-grid { display: grid; grid-template-columns: 1fr; gap: 20px; width: 80%; max-width: 300px; margin-top: 30px; }
-      .lang-btn {
-        padding: 20px; background: rgba(255, 255, 255, 0.1); color: white;
-        border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; font-size: 18px;
-        cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;
-      }
-      .lang-btn img { width: 35px; border-radius: 4px; }
+      /* --- LA GALERIE --- */
+      #gallery-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 20, 0.98); z-index: 27000; display: none; flex-direction: column; align-items: center; padding-top: 80px; color: white; overflow-y: auto; }
+      #gallery-overlay h2 { font-family: 'Playfair Display', serif; font-size: 2em; margin-bottom: 30px; letter-spacing: 1px; }
+      .empty-message { opacity: 0.6; font-style: italic; margin-top: 20px; text-align: center; }
+      #gallery-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; width: 90%; max-width: 800px; padding-bottom: 30px; }
+      
+      .gallery-item { width: 140px; height: 140px; background-color: #222; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.2); border-radius: 15px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+      .gallery-item:hover { transform: translateY(-5px); border-color: #FFB75E; box-shadow: 0 10px 20px rgba(255, 183, 94, 0.3); }
+      .gallery-item-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); padding: 8px 0; text-align: center; }
+      .gallery-item-overlay p { margin: 0; font-size: 13px; font-weight: bold; color: white; }
 
-      #scan-message {
-        display: none; position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.8); color: white; padding: 15px 30px;
-        border-radius: 40px; z-index: 900; text-align: center; width: 80%;
-      }
+      #reset-btn { margin-top: 20px; margin-bottom: 50px; padding: 10px 20px; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); border-radius: 30px; font-size: 12px; cursor: pointer; transition: 0.3s; }
+      #reset-btn:hover { background: rgba(255,255,255,0.1); color: white; }
 
-      #video-overlay {
-        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: black; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; 
-      }
-      video { width: 100%; max-height: 80vh; background: #000; }
-
-      .hidden { display: none !important; }
+      /* --- VIDÉO --- */
+      #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 28000; flex-direction: column; align-items: center; justify-content: center; }
+      video#myVideo { width: 100%; max-height: 80vh; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+      #close-video-btn { margin-top: 20px; padding: 12px 30px; background: white; color: black; border: none; border-radius: 30px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s; }
+      #close-video-btn:active { transform: scale(0.95); }
     </style>
   </head>
 
   <body>
 
-    <div id="burger-icon" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
+    <div id="auth-page">
+      <div class="auth-overlay"></div>
+      <div class="auth-box">
+        <div class="logo-placeholder" style="margin: 0 auto 20px auto;">🌴</div>
+        <h2 id="auth-title">Connexion</h2>
+        
+        <input type="email" id="auth-email" class="auth-input" placeholder="Adresse Email">
+        <input type="password" id="auth-password" class="auth-input" placeholder="Mot de passe">
+        
+        <button class="start-btn" onclick="handleAuth()" id="auth-submit-btn">Se connecter</button>
+        <p class="auth-switch" onclick="toggleAuthMode()" id="auth-switch-text">Pas encore de compte ? S'inscrire</p>
+      </div>
     </div>
 
+    <div id="burger-icon" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+
     <div id="side-menu">
-      <a href="#" onclick="navTo('home')">🏠 Home / Langues</a>
+      <a href="#" onclick="navTo('home')">🏠 Accueil</a>
+      <a href="#" onclick="navTo('language')">🌍 Langues / Languages</a>
       <a href="#" onclick="navTo('scan')">📷 Scan AR</a>
-      <a href="#" onclick="navTo('video')">🎬 Voir Vidéo</a>
+      <a href="#" onclick="navTo('video')">🎬 Voir Vidéos</a>
+      
+      <a href="#" onclick="logout()" style="color: #FFB75E; border-top: 1px solid rgba(255,255,255,0.2); margin-top: 20px;">🚪 Déconnexion (Test)</a>
+    </div>
+
+    <div id="presentation-page">
+      <div class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="logo-placeholder">🌴</div>
+          <h1>Bali Explorer</h1>
+          <p>Plongez au cœur de l'île des Dieux. Découvrez les secrets de Bali à travers une expérience immersive en Réalité Augmentée.</p>
+          <button class="start-btn" onclick="goToLanguages()">Scanner maintenant</button>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="text-box">
+          <h2>Découvrez la culture</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula.</p>
+        </div>
+        <div class="img-box"><img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=800&auto=format&fit=crop" alt="Temple Bali"></div>
+      </div>
+      <div class="content-section reverse">
+        <div class="text-box">
+          <h2>Une nature époustouflante</h2>
+          <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae.</p>
+        </div>
+        <div class="img-box"><img src="https://images.unsplash.com/photo-1554481923-a6918bd997bc?q=80&w=800&auto=format&fit=crop" alt="Nature Bali"></div>
+      </div>
+      <div class="cta-section">
+        <h2>Prêt à donner vie à vos images ?</h2>
+        <button class="start-btn" onclick="goToLanguages()">Scanner maintenant</button>
+      </div>
     </div>
 
     <div id="welcome-overlay">
-      <h2 style="font-weight: 300; letter-spacing: 2px;">SELECT LANGUAGE</h2>
-      <div class="lang-grid">
-        <button class="lang-btn" onclick="setLanguageAndStart('fr')"><img src="https://flagcdn.com/w40/fr.png"> Français</button>
-        <button class="lang-btn" onclick="setLanguageAndStart('en')"><img src="https://flagcdn.com/w40/us.png"> English</button>
-      </div>
+      <h2 style="font-weight: 300; letter-spacing: 2px;">CHOOSE LANGUAGE</h2>
+      <button class="lang-btn" onclick="setLanguageAndStart('fr')"><img src="https://flagcdn.com/w40/fr.png" width="30"> Français</button>
+      <button class="lang-btn" onclick="setLanguageAndStart('en')"><img src="https://flagcdn.com/w40/us.png" width="30"> English</button>
     </div>
 
     <div id="scan-message"></div>
 
+    <div id="gallery-overlay">
+      <h2 id="gallery-title">Vidéos Scannées</h2>
+      <div id="gallery-grid"></div>
+      <p id="empty-gallery-msg" class="empty-message">Aucune vidéo scannée pour le moment.</p>
+      <button id="reset-btn" onclick="resetGallery()">Effacer la mémoire (Test)</button>
+    </div>
+
     <div id="video-overlay">
-      <video id="myVideo" playsinline controls loop></video>
-      <p style="color: white; margin-top: 10px; font-size: 12px; opacity: 0.5;">Use menu to go back</p>
+      <video id="myVideo" playsinline webkit-playsinline controls loop></video>
+      <button id="close-video-btn" onclick="closeVideoPlayer()">RETOUR AU SCAN</button>
     </div>
 
     <a-scene 
       id="ar-scene"
-      mindar-image="imageTargetSrc: ./assets/targets/targets.mind; autoStart: false; uiScanning: no;" 
+      mindar-image="imageTargetSrc: ./assets/targets/targets.mind; autoStart: false; uiScanning: yes;" 
       embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      <a-entity id="target0" mindar-image-target="targetIndex: 0"></a-entity>
+      <a-entity class="ar-target" mindar-image-target="targetIndex: 0" data-index="0"></a-entity>
     </a-scene>
 
     <script>
-      const welcome = document.querySelector('#welcome-overlay');
-      const scanMsg = document.querySelector('#scan-message');
-      const videoOverlay = document.querySelector('#video-overlay');
-      const video = document.querySelector('#myVideo');
-      const sideMenu = document.querySelector('#side-menu');
-      const sceneEl = document.querySelector('#ar-scene');
-      
-      let userLang = 'en';
-      let videoLoaded = false;
+      // --- LOGIQUE D'AUTHENTIFICATION SÉCURISÉE ---
+      let isSignUp = false;
+      const authPage = document.getElementById('auth-page');
 
-      const texts = {
-        'fr': { scan: 'Visez l\'image pour commencer' },
-        'en': { scan: 'Scan the image to start' }
-      };
+      // Si l'utilisateur est déjà connecté, on cache l'écran d'authentification
+      if (localStorage.getItem('baliUserLoggedIn') === 'true') {
+        authPage.style.display = 'none'; 
+      }
 
-      // MENU LOGIQUE
-      function toggleMenu() { sideMenu.classList.toggle('open'); }
+      function toggleAuthMode() {
+        isSignUp = !isSignUp;
+        document.getElementById('auth-title').innerText = isSignUp ? "Créer un compte" : "Connexion";
+        document.getElementById('auth-submit-btn').innerText = isSignUp ? "S'inscrire" : "Se connecter";
+        document.getElementById('auth-switch-text').innerText = isSignUp ? "Déjà un compte ? Se connecter" : "Pas encore de compte ? S'inscrire";
+      }
 
-      function navTo(page) {
-        toggleMenu();
-        video.pause();
-        videoOverlay.style.display = 'none';
-        scanMsg.style.display = 'none';
-        welcome.classList.add('hidden');
+      function handleAuth() {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-password').value;
 
-        if(page === 'home') {
-          location.reload(); // Plus propre pour réinitialiser totalement l'AR
-        } else if (page === 'scan') {
-          scanMsg.style.display = 'block';
-        } else if (page === 'video') {
-          if(videoLoaded) {
-            videoOverlay.style.display = 'flex';
-            video.play();
+        if (!email || !pass) {
+          alert("Veuillez remplir tous les champs.");
+          return;
+        }
+
+        if (isSignUp) {
+          // MODE CRÉATION DE COMPTE : On enregistre les infos
+          localStorage.setItem('baliRegisteredEmail', email);
+          localStorage.setItem('baliRegisteredPassword', pass);
+          localStorage.setItem('baliUserLoggedIn', 'true');
+          closeAuthPage();
+        } else {
+          // MODE CONNEXION : On vérifie les infos
+          const savedEmail = localStorage.getItem('baliRegisteredEmail');
+          const savedPass = localStorage.getItem('baliRegisteredPassword');
+
+          if (!savedEmail) {
+            alert("Aucun compte trouvé avec cet email. Nous vous redirigeons vers l'inscription.");
+            if (!isSignUp) toggleAuthMode(); // Bascule auto vers l'inscription
+            return;
+          }
+
+          if (email === savedEmail && pass === savedPass) {
+            localStorage.setItem('baliUserLoggedIn', 'true');
+            closeAuthPage();
           } else {
-            alert(userLang === 'fr' ? "Veuillez d'abord scanner une image" : "Please scan an image first");
-            scanMsg.style.display = 'block';
+            alert("Email ou mot de passe incorrect.");
           }
         }
       }
 
-      // INITIALISATION
-      function setLanguageAndStart(lang) {
-        userLang = lang;
-        welcome.classList.add('hidden');
-        scanMsg.innerText = texts[lang].scan;
-        scanMsg.style.display = 'block';
-        sceneEl.systems['mindar-image-system'].start(); 
+      function closeAuthPage() {
+        authPage.style.opacity = '0';
+        setTimeout(() => { authPage.style.display = 'none'; }, 300);
       }
 
-      // DETECTION
-      document.querySelector('#target0').addEventListener("targetFound", () => {
+      function logout() {
+        localStorage.removeItem('baliUserLoggedIn');
+        window.location.reload(); 
+      }
+      // --------------------------------------------------------
+
+      const presentation = document.querySelector('#presentation-page');
+      const welcome = document.querySelector('#welcome-overlay');
+      const scanMsg = document.querySelector('#scan-message');
+      const galleryOverlay = document.querySelector('#gallery-overlay');
+      const galleryGrid = document.querySelector('#gallery-grid');
+      const emptyMsg = document.querySelector('#empty-gallery-msg');
+      const resetBtn = document.querySelector('#reset-btn');
+      const videoOverlay = document.querySelector('#video-overlay');
+      const video = document.querySelector('#myVideo');
+      const sideMenu = document.querySelector('#side-menu');
+      const sceneEl = document.querySelector('#ar-scene');
+      const closeVideoBtn = document.querySelector('#close-video-btn');
+      
+      let userLang = 'en';
+      let cameraStarted = false;
+      let openedFromGallery = false;
+
+      let unlockedVideos = JSON.parse(localStorage.getItem('baliUnlockedVideos')) || [];
+
+      function unlockVideo(index) {
+        if (!unlockedVideos.includes(index)) {
+          unlockedVideos.push(index);
+          localStorage.setItem('baliUnlockedVideos', JSON.stringify(unlockedVideos));
+        }
+      }
+
+      function resetGallery() {
+        if(confirm(userLang === 'fr' ? "Voulez-vous réinitialiser votre progression (Vidéos) ?" : "Do you want to reset your videos?")) {
+          localStorage.removeItem('baliUnlockedVideos');
+          unlockedVideos = [];
+          buildGallery(); 
+        }
+      }
+
+      function buildGallery() {
+        galleryGrid.innerHTML = ''; 
+        
+        if (unlockedVideos.length === 0) {
+          emptyMsg.style.display = 'block';
+          resetBtn.style.display = 'none';
+          emptyMsg.innerText = (userLang === 'fr') ? "Aucune vidéo scannée pour le moment." : "No videos scanned yet.";
+        } else {
+          emptyMsg.style.display = 'none';
+          resetBtn.style.display = 'block'; 
+          
+          unlockedVideos.forEach(index => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.style.backgroundImage = `url('./assets/images/cible_${index}.jpg')`; 
+            item.innerHTML = `<div class="gallery-item-overlay"><p>Vidéo ${index + 1}</p></div>`;
+            item.onclick = () => playVideo(index, true); 
+            galleryGrid.appendChild(item);
+          });
+        }
+      }
+
+      function toggleMenu() { sideMenu.classList.toggle('open'); }
+
+      function goToLanguages() {
+        presentation.scrollTop = 0;
+        presentation.style.display = 'none';
+        welcome.style.display = 'flex';
+      }
+
+      function closeVideoPlayer() {
+        video.pause();
+        videoOverlay.style.display = 'none';
+        
+        if (openedFromGallery) {
+          galleryOverlay.style.display = 'flex';
+        } else {
+          scanMsg.style.display = 'block';
+          const scanUI = document.querySelector('.mindar-ui-scanning');
+          if (scanUI) scanUI.style.display = 'block';
+        }
+      }
+
+      function navTo(page) {
+        toggleMenu();
+        video.pause();
+        
+        if(page === 'home') {
+          window.location.reload(); 
+          return; 
+        }
+        
+        videoOverlay.style.display = 'none';
         scanMsg.style.display = 'none';
-        video.src = `./assets/videos/video_${userLang}.mp4`;
+        welcome.style.display = 'none';
+        presentation.style.display = 'none';
+        galleryOverlay.style.display = 'none';
+        
+        if (page === 'language') {
+          welcome.style.display = 'flex';
+        } else if (page === 'scan') {
+          scanMsg.style.display = 'block';
+          const scanUI = document.querySelector('.mindar-ui-scanning');
+          if (scanUI) scanUI.style.display = 'block';
+        } else if (page === 'video') {
+          document.getElementById('gallery-title').innerText = (userLang === 'fr') ? "Vidéos Scannées" : "Scanned Videos";
+          buildGallery();
+          galleryOverlay.style.display = 'flex';
+        }
+      }
+
+      function setLanguageAndStart(lang) {
+        userLang = lang;
+        welcome.style.display = 'none';
+        
+        if (lang === 'fr') {
+          scanMsg.innerText = "Visez l'image pour commencer";
+          closeVideoBtn.innerText = "RETOUR AU SCAN";
+        } else {
+          scanMsg.innerText = "Scan the image to start";
+          closeVideoBtn.innerText = "BACK TO SCAN";
+        }
+        
+        scanMsg.style.display = 'block';
+        
+        if (!cameraStarted) {
+          sceneEl.systems['mindar-image-system'].start(); 
+          cameraStarted = true;
+        }
+      }
+
+      function playVideo(index, fromGallery = false) {
+        openedFromGallery = fromGallery;
+        scanMsg.style.display = 'none';
+        galleryOverlay.style.display = 'none';
+        
+        const scanUI = document.querySelector('.mindar-ui-scanning');
+        if (scanUI) scanUI.style.display = 'none';
+
+        video.src = `./assets/videos/video_${userLang}.mp4`; 
         videoOverlay.style.display = 'flex';
         video.load();
         video.play();
-        videoLoaded = true;
+      }
+
+      const allTargets = document.querySelectorAll('.ar-target');
+      allTargets.forEach(target => {
+        target.addEventListener("targetFound", () => {
+          const targetIndex = parseInt(target.getAttribute('data-index'));
+          unlockVideo(targetIndex); 
+          playVideo(targetIndex, false); 
+        });
       });
     </script>
   </body>
