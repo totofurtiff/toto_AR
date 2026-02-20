@@ -2,111 +2,171 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Projet AR Bali - Auth Sécurisée & Galerie</title>
+    <title>Bali Explorer AR - Premium Edition</title>
     
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
     <style>
-      /* --- BASE & CAMÉRA --- */
-      body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; font-family: 'Montserrat', sans-serif; }
-      a-scene { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; }
-      .a-canvas { background: transparent !important; z-index: 1 !important; }
+      /* =========================================
+         VARIABLES & BASE
+         ========================================= */
+      :root {
+        --primary-green: #1a3c34;
+        --light-green: #2a5a4f;
+        --gold-gradient: linear-gradient(135deg, #F4D068 0%, #AA771C 100%);
+        --text-dark: #2c3e38;
+        --bg-light: #f8faf9;
+      }
+
+      * { box-sizing: border-box; }
+      body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; }
+      h1, h2, h3 { font-family: 'Playfair Display', serif; margin: 0; }
+      
+      /* --- CAMÉRA AR --- */
+      a-scene { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+      .a-canvas { background: transparent !important; }
       .mindar-ui-overlay, .mindar-ui-loading, .mindar-ui-compatibility { display: none !important; }
+      video:not(#myVideo) { position: absolute !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; object-fit: cover !important; z-index: -2 !important; }
 
-      /* --- PAGE D'AUTHENTIFICATION --- */
-      #auth-page {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: url('https://images.unsplash.com/photo-1537996194458-132d0db3b3b2?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
-        z-index: 60000; display: flex; align-items: center; justify-content: center;
+      /* =========================================
+         COMPOSANTS UI
+         ========================================= */
+      .start-btn { 
+        padding: 16px 40px; background: var(--gold-gradient); color: #fff; border: none; border-radius: 50px; 
+        font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1.5px; 
+        text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 25px rgba(170, 119, 28, 0.4); transition: all 0.3s ease; 
       }
-      .auth-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.9) 100%); }
-      
-      .auth-box {
-        position: relative; z-index: 1; background: rgba(255, 255, 255, 0.1);
-        padding: 40px 30px; border-radius: 20px; text-align: center; color: white;
-        backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2);
-        width: 85%; max-width: 350px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-      }
-      .auth-box h2 { font-family: 'Playfair Display', serif; font-size: 2em; margin-bottom: 25px; letter-spacing: 1px; }
-      
-      .auth-input {
-        width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px;
-        border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.3); color: white;
-        font-family: 'Montserrat', sans-serif; font-size: 14px; box-sizing: border-box; outline: none; transition: 0.3s;
-      }
-      .auth-input::placeholder { color: rgba(255,255,255,0.6); }
-      .auth-input:focus { border-color: #FFB75E; background: rgba(0,0,0,0.5); }
-      
-      .auth-switch { margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.7); cursor: pointer; text-decoration: underline; transition: 0.3s; }
-      .auth-switch:hover { color: white; }
+      .start-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(170, 119, 28, 0.5); }
+      .start-btn:active { transform: translateY(1px); }
 
-      /* --- LANDING PAGE SCROLLABLE --- */
-      #presentation-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fdfaf6; z-index: 40000; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
-      .hero-section { position: relative; height: 100vh; min-height: 600px; background: url('https://images.unsplash.com/photo-1537996194458-132d0db3b3b2?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
-      .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%); }
+      /* BOITES GLASSMORPHISM (Utilisées pour Auth et Langues) */
+      .glass-box {
+        position: relative; z-index: 1; background: rgba(255, 255, 255, 0.1); padding: 50px 40px; 
+        border-radius: 24px; text-align: center; color: white; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.3); width: 90%; max-width: 450px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+      }
+      .logo-placeholder { 
+        width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto 25px auto; 
+        display: flex; align-items: center; justify-content: center; font-size: 30px; border: 1px solid rgba(255,255,255,0.5); 
+        box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      }
+
+      /* =========================================
+         PAGE D'AUTHENTIFICATION
+         ========================================= */
+      #auth-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1537996194458-132d0db3b3b2?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat; z-index: 60000; display: flex; align-items: center; justify-content: center; }
+      .auth-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(26,60,52,0.4) 0%, rgba(26,60,52,0.8) 100%); }
+      
+      .auth-input { width: 100%; padding: 16px 20px; margin-bottom: 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.4); background: rgba(0,0,0,0.2); color: white; font-family: 'Montserrat', sans-serif; font-size: 14px; transition: all 0.3s ease; }
+      .auth-input::placeholder { color: rgba(255,255,255,0.7); }
+      .auth-input:focus { border-color: #F4D068; background: rgba(0,0,0,0.4); outline: none; box-shadow: 0 0 15px rgba(244, 208, 104, 0.2); }
+      .auth-switch { margin-top: 25px; font-size: 13px; color: rgba(255,255,255,0.8); cursor: pointer; transition: 0.3s; }
+      .auth-switch:hover { color: #F4D068; text-decoration: underline; }
+
+      /* =========================================
+         MENU BURGER
+         ========================================= */
+      #burger-icon { position: fixed; top: 25px; right: 25px; width: 35px; height: 22px; z-index: 50000; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
+      #burger-icon span { display: block; height: 3px; width: 100%; background: white; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: 0.3s; }
+      
+      #side-menu { position: fixed; top: 0; right: -300px; width: 280px; height: 100vh; background: rgba(26, 60, 52, 0.95); z-index: 49999; transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column; padding-top: 100px; border-left: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
+      #side-menu.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+      #side-menu a { color: white; text-decoration: none; padding: 20px 30px; font-weight: 500; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+      #side-menu a:hover { background: rgba(255,255,255,0.05); padding-left: 40px; color: #F4D068; }
+
+      /* =========================================
+         LANDING PAGE
+         ========================================= */
+      #presentation-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); z-index: 40000; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+      .hero-section { position: relative; height: 100vh; min-height: 600px; background: url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
+      .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(26,60,52,0.2) 0%, rgba(26,60,52,0.8) 100%); }
       .hero-content { position: relative; z-index: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-      .logo-placeholder { width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid rgba(255,255,255,0.5); backdrop-filter: blur(5px); }
-      .hero-content h1 { font-family: 'Playfair Display', serif; font-size: 3.5em; letter-spacing: 2px; margin-bottom: 15px; font-weight: 700; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-      .hero-content p { font-size: 1.2em; line-height: 1.5; max-width: 600px; margin-bottom: 40px; font-weight: 300; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+      .hero-content h1 { font-size: 4.5em; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+      .hero-content p { font-size: 1.2em; line-height: 1.6; max-width: 500px; margin-bottom: 40px; font-weight: 400; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
-      .start-btn { padding: 18px 50px; background: linear-gradient(45deg, #FFB75E, #ED8F03); color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(237, 143, 3, 0.5); transition: transform 0.3s, box-shadow 0.3s; width: 100%; }
-      .start-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(237, 143, 3, 0.6); }
-      .start-btn:active { transform: scale(0.98); }
-      #presentation-page .start-btn { width: auto; }
-
-      /* Contenu explicatif */
-      .content-section { display: flex; flex-wrap: wrap; align-items: center; padding: 80px 5%; max-width: 1200px; margin: 0 auto; gap: 40px; }
+      .content-section { display: flex; flex-wrap: wrap; align-items: center; padding: 100px 5%; max-width: 1200px; margin: 0 auto; gap: 60px; }
       .content-section.reverse { flex-direction: row-reverse; }
-      .text-box { flex: 1 1 400px; color: #333; }
-      .text-box h2 { font-family: 'Playfair Display', serif; font-size: 2.2em; color: #1a4a38; margin-bottom: 20px; }
+      .text-box { flex: 1 1 400px; color: var(--text-dark); }
+      .text-box h2 { font-size: 2.8em; color: var(--primary-green); margin-bottom: 25px; }
       .text-box p { font-size: 1.1em; line-height: 1.8; color: #555; margin-bottom: 15px; }
-      .img-box { flex: 1 1 400px; }
-      .img-box img { width: 100%; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); object-fit: cover; }
-      .cta-section { background: #1a4a38; color: white; text-align: center; padding: 80px 20px; }
-      .cta-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5em; margin-bottom: 30px; }
+      .img-box { flex: 1 1 400px; position: relative; }
+      .img-box::before { content: ''; position: absolute; top: -20px; left: -20px; width: 100%; height: 100%; border: 2px solid var(--primary-green); border-radius: 24px; z-index: 0; }
+      .img-box img { width: 100%; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); object-fit: cover; position: relative; z-index: 1; transition: 0.5s ease; }
+      .img-box:hover img { transform: translateY(-10px); }
+      .cta-section { background: var(--primary-green); color: white; text-align: center; padding: 100px 20px; }
 
-      /* --- MENU BURGER --- */
-      #burger-icon { position: fixed; top: 20px; right: 20px; width: 30px; height: 25px; z-index: 50000; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
-      #burger-icon span { display: block; height: 4px; width: 100%; background: white; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-      
-      /* CORRECTION CSS DU MENU : box-sizing et overflow ajoutés pour ne jamais cacher le bas */
-      #side-menu { 
-        position: fixed; top: 0; right: -260px; width: 250px; height: 100vh; 
-        background: rgba(20, 40, 40, 0.95); z-index: 49999; transition: 0.4s; 
-        display: flex; flex-direction: column; padding-top: 80px; 
-        border-left: 1px solid rgba(255,255,255,0.1);
-        box-sizing: border-box; overflow-y: auto; 
+      /* =========================================
+         NOUVEAU : SÉLECTION DE LANGUE "PREMIUM"
+         ========================================= */
+      #welcome-overlay { 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 25000; display: none; 
+        flex-direction: column; align-items: center; justify-content: center; 
+        background: linear-gradient(180deg, rgba(26,60,52,0.7) 0%, rgba(26,60,52,0.95) 100%), url('https://images.unsplash.com/photo-1554481923-a6918bd997bc?q=80&w=1600') center/cover;
       }
-      #side-menu.open { right: 0; }
-      #side-menu a { color: white; text-decoration: none; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase; font-weight: 300; font-size: 15px; }
-
-      /* --- ÉCRANS UI --- */
-      #welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 25000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; }
-      .lang-btn { padding: 18px; width: 220px; background: rgba(255,255,255,0.1); color: white; margin: 10px; border: 1px solid white; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
-      .lang-btn:hover { background: rgba(255,255,255,0.2); }
-      #scan-message { display: none; position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); background: rgba(0, 50, 50, 0.8); color: white; padding: 12px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.3); z-index: 2000; text-align: center; pointer-events: none; white-space: nowrap; }
-
-      /* --- LA GALERIE --- */
-      #gallery-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 20, 0.98); z-index: 27000; display: none; flex-direction: column; align-items: center; padding-top: 80px; color: white; overflow-y: auto; }
-      #gallery-overlay h2 { font-family: 'Playfair Display', serif; font-size: 2em; margin-bottom: 30px; letter-spacing: 1px; }
-      .empty-message { opacity: 0.6; font-style: italic; margin-top: 20px; text-align: center; }
-      #gallery-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; width: 90%; max-width: 800px; padding-bottom: 30px; }
       
-      .gallery-item { width: 140px; height: 140px; background-color: #222; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.2); border-radius: 15px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-      .gallery-item:hover { transform: translateY(-5px); border-color: #FFB75E; box-shadow: 0 10px 20px rgba(255, 183, 94, 0.3); }
-      .gallery-item-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); padding: 8px 0; text-align: center; }
-      .gallery-item-overlay p { margin: 0; font-size: 13px; font-weight: bold; color: white; }
+      .lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; width: 100%; }
+      @media (max-width: 400px) { .lang-grid { grid-template-columns: 1fr; } } /* Adaptatif sur petit écran */
+
+      .lang-btn { 
+        padding: 15px 20px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.2); 
+        border-radius: 12px; font-size: 14px; font-family: 'Montserrat'; font-weight: 500; cursor: pointer; 
+        display: flex; align-items: center; justify-content: flex-start; gap: 12px; transition: 0.3s; width: 100%;
+      }
+      .lang-btn img { border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+      .lang-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: #F4D068; color: #F4D068; }
+
+      /* =========================================
+         UI DE SCAN
+         ========================================= */
+      #scan-message { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.95); color: var(--primary-green); padding: 15px 35px; border-radius: 50px; font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; text-align: center; white-space: nowrap; }
+
+      /* =========================================
+         NOUVEAU : GALERIE "MES SCANS" AVEC CADENAS
+         ========================================= */
+      #gallery-overlay { 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 27000; display: none; 
+        flex-direction: column; align-items: center; padding-top: 100px; overflow-y: auto;
+        /* Joli fond tropical sombre pour la galerie */
+        background: linear-gradient(180deg, rgba(26,60,52,0.85) 0%, rgba(10,25,20,0.95) 100%), url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=1600') center/cover;
+        background-attachment: fixed;
+      }
+      #gallery-overlay h2 { font-size: 2.8em; margin-bottom: 40px; color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+      
+      #gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 130px)); gap: 20px; justify-content: center; width: 90%; max-width: 800px; padding-bottom: 50px; }
+      
+      .gallery-item { width: 130px; height: 130px; background-color: #222; background-size: cover; background-position: center; border-radius: 20px; cursor: pointer; transition: 0.4s ease; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: 2px solid transparent; }
+      .gallery-item::after { content:''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.9) 100%); pointer-events: none; }
+      .gallery-item:hover { transform: translateY(-8px) scale(1.02); border-color: #F4D068; box-shadow: 0 15px 30px rgba(244, 208, 104, 0.2); }
+      .gallery-item-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 12px 10px; text-align: center; z-index: 2; }
+      .gallery-item-overlay p { margin: 0; font-size: 12px; font-weight: 600; color: white; letter-spacing: 0.5px; }
+
+      /* Style spécial pour les cases "Cadenas / Verrouillé" */
+      .gallery-item.locked { 
+        background-color: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); 
+        display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        cursor: not-allowed; box-shadow: none; 
+      }
+      .gallery-item.locked::after { display: none; }
+      .gallery-item.locked:hover { transform: none; border-color: rgba(255,255,255,0.2); box-shadow: none; }
+      .locked-icon { font-size: 28px; opacity: 0.3; margin-bottom: 8px; filter: grayscale(100%); }
+      .locked-text { font-size: 11px; opacity: 0.4; color: white; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
 
       #reset-btn { margin-top: 20px; margin-bottom: 50px; padding: 10px 20px; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); border-radius: 30px; font-size: 12px; cursor: pointer; transition: 0.3s; }
       #reset-btn:hover { background: rgba(255,255,255,0.1); color: white; }
 
-      /* --- VIDÉO --- */
-      #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 28000; flex-direction: column; align-items: center; justify-content: center; }
-      video#myVideo { width: 100%; max-height: 80vh; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-      #close-video-btn { margin-top: 20px; padding: 12px 30px; background: white; color: black; border: none; border-radius: 30px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s; }
-      #close-video-btn:active { transform: scale(0.95); }
+      /* =========================================
+         PAGES DE CONTENU (Vidéo & OK)
+         ========================================= */
+      #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 28000; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+      video#myVideo { width: 90%; max-width: 800px; max-height: 70vh; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); background: #000; position: relative !important; z-index: 2 !important; }
+      
+      #ok-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-green); z-index: 29000; flex-direction: column; align-items: center; justify-content: center; color: white; }
+      #ok-page h1 { font-size: 6em; font-weight: 700; margin-bottom: 40px; color: #F4D068; text-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+      .close-btn { margin-top: 30px; padding: 15px 35px; background: white; color: var(--primary-green); border: none; border-radius: 30px; font-size: 13px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; }
+      .close-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(0,0,0,0.3); }
     </style>
   </head>
 
@@ -114,14 +174,12 @@
 
     <div id="auth-page">
       <div class="auth-overlay"></div>
-      <div class="auth-box">
-        <div class="logo-placeholder" style="margin: 0 auto 20px auto;">🌴</div>
+      <div class="glass-box">
+        <div class="logo-placeholder">🌴</div>
         <h2 id="auth-title">Connexion</h2>
-        
         <input type="email" id="auth-email" class="auth-input" placeholder="Adresse Email">
         <input type="password" id="auth-password" class="auth-input" placeholder="Mot de passe">
-        
-        <button class="start-btn" onclick="handleAuth()" id="auth-submit-btn">Se connecter</button>
+        <button class="start-btn" style="width: 100%; margin-top: 10px;" onclick="handleAuth()" id="auth-submit-btn">Se connecter</button>
         <p class="auth-switch" onclick="toggleAuthMode()" id="auth-switch-text">Pas encore de compte ? S'inscrire</p>
       </div>
     </div>
@@ -130,11 +188,10 @@
 
     <div id="side-menu">
       <a href="#" onclick="navTo('home')">🏠 Accueil</a>
-      <a href="#" onclick="navTo('language')">🌍 Langues / Languages</a>
+      <a href="#" onclick="navTo('language')">🌍 Langues</a>
       <a href="#" onclick="navTo('scan')">📷 Scan AR</a>
-      <a href="#" onclick="navTo('video')">🎬 Voir Vidéos</a>
-      
-      <a href="#" onclick="logout()" style="color: #FFB75E; border-top: 1px solid rgba(255,255,255,0.2); margin-top: 20px;">🚪 Déconnexion (Test)</a>
+      <a href="#" onclick="navTo('video')">🎬 Mes Scans</a>
+      <a href="#" onclick="logout()" style="color: #F4D068; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto; margin-bottom: 20px;">🚪 Déconnexion</a>
     </div>
 
     <div id="presentation-page">
@@ -150,41 +207,56 @@
       <div class="content-section">
         <div class="text-box">
           <h2>Découvrez la culture</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula.</p>
+          <p>S'inscrivant dans une tradition millénaire, la culture balinaise fascine par ses rituels colorés, ses danses envoûtantes et ses temples majestueux disséminés à travers l'île.</p>
         </div>
         <div class="img-box"><img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=800&auto=format&fit=crop" alt="Temple Bali"></div>
       </div>
       <div class="content-section reverse">
         <div class="text-box">
           <h2>Une nature époustouflante</h2>
-          <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae.</p>
+          <p>Des rizières en terrasses verdoyantes d'Ubud aux plages de sable fin, laissez-vous surprendre par la diversité et la beauté préservée des paysages de l'île des Dieux.</p>
         </div>
         <div class="img-box"><img src="https://images.unsplash.com/photo-1554481923-a6918bd997bc?q=80&w=800&auto=format&fit=crop" alt="Nature Bali"></div>
       </div>
       <div class="cta-section">
         <h2>Prêt à donner vie à vos images ?</h2>
-        <button class="start-btn" onclick="goToLanguages()">Scanner maintenant</button>
+        <button class="start-btn" style="background: white; color: var(--primary-green);" onclick="goToLanguages()">Scanner maintenant</button>
       </div>
     </div>
 
     <div id="welcome-overlay">
-      <h2 style="font-weight: 300; letter-spacing: 2px;">CHOOSE LANGUAGE</h2>
-      <button class="lang-btn" onclick="setLanguageAndStart('fr')"><img src="https://flagcdn.com/w40/fr.png" width="30"> Français</button>
-      <button class="lang-btn" onclick="setLanguageAndStart('en')"><img src="https://flagcdn.com/w40/us.png" width="30"> English</button>
+      <div class="glass-box" style="padding: 40px 30px;">
+        <div class="logo-placeholder" style="margin: 0 auto 20px auto; width: 60px; height: 60px; font-size: 24px;">🌍</div>
+        <h2 style="font-size: 1.5em; margin-bottom: 5px;">CHOIX DE LA LANGUE</h2>
+        <p style="opacity: 0.7; font-size: 13px; margin-bottom: 25px;">Sélectionnez votre langue pour l'expérience</p>
+        
+        <div class="lang-grid">
+          <button class="lang-btn" onclick="setLanguageAndStart('fr')"><img src="https://flagcdn.com/w40/fr.png" width="24"> Français</button>
+          <button class="lang-btn" onclick="setLanguageAndStart('en')"><img src="https://flagcdn.com/w40/us.png" width="24"> English</button>
+          <button class="lang-btn" onclick="setLanguageAndStart('id')"><img src="https://flagcdn.com/w40/id.png" width="24"> Indonesia</button>
+          <button class="lang-btn" onclick="setLanguageAndStart('es')"><img src="https://flagcdn.com/w40/es.png" width="24"> Español</button>
+          <button class="lang-btn" onclick="setLanguageAndStart('de')"><img src="https://flagcdn.com/w40/de.png" width="24"> Deutsch</button>
+          <button class="lang-btn" onclick="setLanguageAndStart('it')"><img src="https://flagcdn.com/w40/it.png" width="24"> Italiano</button>
+        </div>
+      </div>
     </div>
 
     <div id="scan-message"></div>
 
     <div id="gallery-overlay">
-      <h2 id="gallery-title">Vidéos Scannées</h2>
+      <h2 id="gallery-title">Mes Scans</h2>
       <div id="gallery-grid"></div>
-      <p id="empty-gallery-msg" class="empty-message">Aucune vidéo scannée pour le moment.</p>
-      <button id="reset-btn" onclick="resetGallery()">Effacer la mémoire (Test)</button>
+      <button id="reset-btn" style="display:none;" onclick="resetGallery()">Réinitialiser ma progression</button>
     </div>
 
     <div id="video-overlay">
       <video id="myVideo" playsinline webkit-playsinline controls loop></video>
-      <button id="close-video-btn" onclick="closeVideoPlayer()">RETOUR AU SCAN</button>
+      <button class="close-btn" onclick="closeVideoPlayer()">RETOUR AU SCAN</button>
+    </div>
+
+    <div id="ok-page">
+        <h1>OK</h1>
+        <button class="close-btn" onclick="closeOKPage()">RETOUR AU SCAN</button>
     </div>
 
     <a-scene 
@@ -192,18 +264,17 @@
       mindar-image="imageTargetSrc: ./assets/targets/targets.mind; autoStart: false; uiScanning: yes;" 
       embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      
       <a-entity class="ar-target" mindar-image-target="targetIndex: 0" data-index="0"></a-entity>
+      <a-entity class="ar-target" mindar-image-target="targetIndex: 1" data-index="1"></a-entity>
     </a-scene>
 
     <script>
-      // --- LOGIQUE D'AUTHENTIFICATION SÉCURISÉE ---
+      // --- LOGIQUE D'AUTHENTIFICATION ---
       let isSignUp = false;
       const authPage = document.getElementById('auth-page');
 
-      // Si l'utilisateur est déjà connecté, on cache l'écran d'authentification
-      if (localStorage.getItem('baliUserLoggedIn') === 'true') {
-        authPage.style.display = 'none'; 
-      }
+      if (localStorage.getItem('baliUserLoggedIn') === 'true') { authPage.style.display = 'none'; }
 
       function toggleAuthMode() {
         isSignUp = !isSignUp;
@@ -215,65 +286,50 @@
       function handleAuth() {
         const email = document.getElementById('auth-email').value;
         const pass = document.getElementById('auth-password').value;
-
-        if (!email || !pass) {
-          alert("Veuillez remplir tous les champs.");
-          return;
-        }
+        if (!email || !pass) { alert("Veuillez remplir tous les champs."); return; }
 
         if (isSignUp) {
-          // MODE CRÉATION DE COMPTE : On enregistre les infos
           localStorage.setItem('baliRegisteredEmail', email);
           localStorage.setItem('baliRegisteredPassword', pass);
           localStorage.setItem('baliUserLoggedIn', 'true');
           closeAuthPage();
         } else {
-          // MODE CONNEXION : On vérifie les infos
           const savedEmail = localStorage.getItem('baliRegisteredEmail');
           const savedPass = localStorage.getItem('baliRegisteredPassword');
-
           if (!savedEmail) {
-            alert("Aucun compte trouvé avec cet email. Nous vous redirigeons vers l'inscription.");
-            if (!isSignUp) toggleAuthMode(); // Bascule auto vers l'inscription
+            alert("Aucun compte trouvé. Redirection vers l'inscription.");
+            if (!isSignUp) toggleAuthMode();
             return;
           }
-
           if (email === savedEmail && pass === savedPass) {
             localStorage.setItem('baliUserLoggedIn', 'true');
             closeAuthPage();
-          } else {
-            alert("Email ou mot de passe incorrect.");
-          }
+          } else { alert("Email ou mot de passe incorrect."); }
         }
       }
 
-      function closeAuthPage() {
-        authPage.style.opacity = '0';
-        setTimeout(() => { authPage.style.display = 'none'; }, 300);
-      }
+      function closeAuthPage() { authPage.style.opacity = '0'; setTimeout(() => { authPage.style.display = 'none'; }, 300); }
+      function logout() { localStorage.removeItem('baliUserLoggedIn'); window.location.reload(); }
 
-      function logout() {
-        localStorage.removeItem('baliUserLoggedIn');
-        window.location.reload(); 
-      }
-      // --------------------------------------------------------
-
+      // --- LOGIQUE APPLICATION ---
       const presentation = document.querySelector('#presentation-page');
       const welcome = document.querySelector('#welcome-overlay');
       const scanMsg = document.querySelector('#scan-message');
       const galleryOverlay = document.querySelector('#gallery-overlay');
       const galleryGrid = document.querySelector('#gallery-grid');
-      const emptyMsg = document.querySelector('#empty-gallery-msg');
       const resetBtn = document.querySelector('#reset-btn');
       const videoOverlay = document.querySelector('#video-overlay');
+      const okPage = document.querySelector('#ok-page');
       const video = document.querySelector('#myVideo');
       const sideMenu = document.querySelector('#side-menu');
       const sceneEl = document.querySelector('#ar-scene');
-      const closeVideoBtn = document.querySelector('#close-video-btn');
       
       let userLang = 'en';
       let cameraStarted = false;
       let openedFromGallery = false;
+
+      // NOUVEAU : Le nombre total de scans existants dans ton jeu (ex: 12 pour commencer)
+      const TOTAL_SCANS = 12; 
 
       let unlockedVideos = JSON.parse(localStorage.getItem('baliUnlockedVideos')) || [];
 
@@ -285,96 +341,90 @@
       }
 
       function resetGallery() {
-        if(confirm(userLang === 'fr' ? "Voulez-vous réinitialiser votre progression (Vidéos) ?" : "Do you want to reset your videos?")) {
+        if(confirm(userLang === 'fr' ? "Réinitialiser tous vos scans ?" : "Reset all your scans?")) {
           localStorage.removeItem('baliUnlockedVideos');
           unlockedVideos = [];
           buildGallery(); 
         }
       }
 
+      // FONCTION GALERIE MISE À JOUR : Crée les cadenas pour les scans manquants
       function buildGallery() {
         galleryGrid.innerHTML = ''; 
         
-        if (unlockedVideos.length === 0) {
-          emptyMsg.style.display = 'block';
-          resetBtn.style.display = 'none';
-          emptyMsg.innerText = (userLang === 'fr') ? "Aucune vidéo scannée pour le moment." : "No videos scanned yet.";
-        } else {
-          emptyMsg.style.display = 'none';
-          resetBtn.style.display = 'block'; 
+        for (let i = 0; i < TOTAL_SCANS; i++) {
+          const item = document.createElement('div');
           
-          unlockedVideos.forEach(index => {
-            const item = document.createElement('div');
+          if (unlockedVideos.includes(i)) {
+            // Si le scan est débloqué -> Affiche l'image et l'action
             item.className = 'gallery-item';
-            item.style.backgroundImage = `url('./assets/images/cible_${index}.jpg')`; 
-            item.innerHTML = `<div class="gallery-item-overlay"><p>Vidéo ${index + 1}</p></div>`;
-            item.onclick = () => playVideo(index, true); 
-            galleryGrid.appendChild(item);
-          });
+            item.style.backgroundImage = `url('./assets/images/cible_${i}.jpg')`; 
+            item.innerHTML = `<div class="gallery-item-overlay"><p>${i === 0 ? 'Vidéo Bali' : 'Page OK'}</p></div>`;
+            item.onclick = () => launchContent(i, true); 
+          } else {
+            // Si le scan n'est pas encore trouvé -> Affiche un Cadenas
+            item.className = 'gallery-item locked';
+            item.innerHTML = `<div class="locked-icon">🔒</div><div class="locked-text">Scan ${i + 1}</div>`;
+          }
+          
+          galleryGrid.appendChild(item);
         }
+
+        // Affiche le bouton reset seulement s'il y a au moins 1 truc débloqué
+        resetBtn.style.display = unlockedVideos.length > 0 ? 'block' : 'none';
       }
 
       function toggleMenu() { sideMenu.classList.toggle('open'); }
+      function goToLanguages() { presentation.scrollTop = 0; presentation.style.display = 'none'; welcome.style.display = 'flex'; }
 
-      function goToLanguages() {
-        presentation.scrollTop = 0;
-        presentation.style.display = 'none';
-        welcome.style.display = 'flex';
+      function launchContent(index, fromGallery = false) {
+        openedFromGallery = fromGallery;
+        scanMsg.style.display = 'none';
+        galleryOverlay.style.display = 'none';
+
+        if (index === 0) {
+          // On s'assure que si la langue est FR ou EN ça lance la bonne vidéo, sinon ça lance une vidéo par défaut
+          const safeLang = (userLang === 'fr' || userLang === 'en') ? userLang : 'en';
+          video.src = `./assets/videos/video_${safeLang}.mp4`; 
+          videoOverlay.style.display = 'flex';
+          video.load();
+          video.play();
+        } else if (index === 1) {
+          okPage.style.display = 'flex';
+        }
       }
 
-      function closeVideoPlayer() {
-        video.pause();
-        videoOverlay.style.display = 'none';
-        
-        if (openedFromGallery) {
-          galleryOverlay.style.display = 'flex';
-        } else {
-          scanMsg.style.display = 'block';
-          const scanUI = document.querySelector('.mindar-ui-scanning');
-          if (scanUI) scanUI.style.display = 'block';
-        }
+      function closeVideoPlayer() { video.pause(); videoOverlay.style.display = 'none'; finalizeReturn(); }
+      function closeOKPage() { okPage.style.display = 'none'; finalizeReturn(); }
+
+      function finalizeReturn() {
+        if (openedFromGallery) { galleryOverlay.style.display = 'flex'; } 
+        else { scanMsg.style.display = 'block'; }
       }
 
       function navTo(page) {
-        toggleMenu();
-        video.pause();
+        toggleMenu(); video.pause();
+        if(page === 'home') { window.location.reload(); return; }
         
-        if(page === 'home') {
-          window.location.reload(); 
-          return; 
-        }
+        videoOverlay.style.display = 'none'; okPage.style.display = 'none';
+        scanMsg.style.display = 'none'; welcome.style.display = 'none';
+        presentation.style.display = 'none'; galleryOverlay.style.display = 'none';
         
-        videoOverlay.style.display = 'none';
-        scanMsg.style.display = 'none';
-        welcome.style.display = 'none';
-        presentation.style.display = 'none';
-        galleryOverlay.style.display = 'none';
-        
-        if (page === 'language') {
-          welcome.style.display = 'flex';
-        } else if (page === 'scan') {
+        if (page === 'language') { welcome.style.display = 'flex'; } 
+        else if (page === 'scan') {
           scanMsg.style.display = 'block';
           const scanUI = document.querySelector('.mindar-ui-scanning');
           if (scanUI) scanUI.style.display = 'block';
-        } else if (page === 'video') {
-          document.getElementById('gallery-title').innerText = (userLang === 'fr') ? "Vidéos Scannées" : "Scanned Videos";
-          buildGallery();
-          galleryOverlay.style.display = 'flex';
+        } 
+        else if (page === 'video') {
+          document.getElementById('gallery-title').innerText = (userLang === 'fr') ? "Mes Scans" : "My Scans";
+          buildGallery(); galleryOverlay.style.display = 'flex';
         }
       }
 
       function setLanguageAndStart(lang) {
-        userLang = lang;
-        welcome.style.display = 'none';
-        
-        if (lang === 'fr') {
-          scanMsg.innerText = "Visez l'image pour commencer";
-          closeVideoBtn.innerText = "RETOUR AU SCAN";
-        } else {
-          scanMsg.innerText = "Scan the image to start";
-          closeVideoBtn.innerText = "BACK TO SCAN";
-        }
-        
+        userLang = lang; welcome.style.display = 'none';
+        scanMsg.innerText = (lang === 'fr') ? "Visez l'image pour commencer" : "Scan the image to start";
         scanMsg.style.display = 'block';
         
         if (!cameraStarted) {
@@ -383,26 +433,12 @@
         }
       }
 
-      function playVideo(index, fromGallery = false) {
-        openedFromGallery = fromGallery;
-        scanMsg.style.display = 'none';
-        galleryOverlay.style.display = 'none';
-        
-        const scanUI = document.querySelector('.mindar-ui-scanning');
-        if (scanUI) scanUI.style.display = 'none';
-
-        video.src = `./assets/videos/video_${userLang}.mp4`; 
-        videoOverlay.style.display = 'flex';
-        video.load();
-        video.play();
-      }
-
       const allTargets = document.querySelectorAll('.ar-target');
       allTargets.forEach(target => {
         target.addEventListener("targetFound", () => {
           const targetIndex = parseInt(target.getAttribute('data-index'));
           unlockVideo(targetIndex); 
-          playVideo(targetIndex, false); 
+          launchContent(targetIndex, false); 
         });
       });
     </script>
