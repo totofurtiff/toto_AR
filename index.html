@@ -17,7 +17,7 @@
         --light-green: #2a5a4f;
         --gold-gradient: linear-gradient(135deg, #F4D068 0%, #AA771C 100%);
         --text-dark: #2c3e38;
-        --bg-light: #f8faf9;
+        --bg-light: #fdfaf6;
       }
 
       * { box-sizing: border-box; }
@@ -41,7 +41,6 @@
       .start-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(170, 119, 28, 0.5); }
       .start-btn:active { transform: translateY(1px); }
 
-      /* BOITES GLASSMORPHISM (Utilisées pour Auth et Langues) */
       .glass-box {
         position: relative; z-index: 1; background: rgba(255, 255, 255, 0.1); padding: 50px 40px; 
         border-radius: 24px; text-align: center; color: white; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -56,9 +55,8 @@
       /* =========================================
          PAGE D'AUTHENTIFICATION
          ========================================= */
-      #auth-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1537996194458-132d0db3b3b2?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat; z-index: 60000; display: flex; align-items: center; justify-content: center; }
+      #auth-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1537996194458-132d0db3b3b2?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat; z-index: 60000; display: flex; align-items: center; justify-content: center; transition: opacity 0.4s ease; }
       .auth-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(26,60,52,0.4) 0%, rgba(26,60,52,0.8) 100%); }
-      
       .auth-input { width: 100%; padding: 16px 20px; margin-bottom: 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.4); background: rgba(0,0,0,0.2); color: white; font-family: 'Montserrat', sans-serif; font-size: 14px; transition: all 0.3s ease; }
       .auth-input::placeholder { color: rgba(255,255,255,0.7); }
       .auth-input:focus { border-color: #F4D068; background: rgba(0,0,0,0.4); outline: none; box-shadow: 0 0 15px rgba(244, 208, 104, 0.2); }
@@ -70,7 +68,6 @@
          ========================================= */
       #burger-icon { position: fixed; top: 25px; right: 25px; width: 35px; height: 22px; z-index: 50000; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
       #burger-icon span { display: block; height: 3px; width: 100%; background: white; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: 0.3s; }
-      
       #side-menu { position: fixed; top: 0; right: -300px; width: 280px; height: 100vh; background: rgba(26, 60, 52, 0.95); z-index: 49999; transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column; padding-top: 100px; border-left: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
       #side-menu.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
       #side-menu a { color: white; text-decoration: none; padding: 20px 30px; font-weight: 500; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
@@ -85,7 +82,6 @@
       .hero-content { position: relative; z-index: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; }
       .hero-content h1 { font-size: 4.5em; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 10px 20px rgba(0,0,0,0.5); }
       .hero-content p { font-size: 1.2em; line-height: 1.6; max-width: 500px; margin-bottom: 40px; font-weight: 400; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-
       .content-section { display: flex; flex-wrap: wrap; align-items: center; padding: 100px 5%; max-width: 1200px; margin: 0 auto; gap: 60px; }
       .content-section.reverse { flex-direction: row-reverse; }
       .text-box { flex: 1 1 400px; color: var(--text-dark); }
@@ -98,17 +94,15 @@
       .cta-section { background: var(--primary-green); color: white; text-align: center; padding: 100px 20px; }
 
       /* =========================================
-         NOUVEAU : SÉLECTION DE LANGUE "PREMIUM"
+         SÉLECTION DE LANGUE
          ========================================= */
       #welcome-overlay { 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 25000; display: none; 
         flex-direction: column; align-items: center; justify-content: center; 
         background: linear-gradient(180deg, rgba(26,60,52,0.7) 0%, rgba(26,60,52,0.95) 100%), url('https://images.unsplash.com/photo-1554481923-a6918bd997bc?q=80&w=1600') center/cover;
       }
-      
       .lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; width: 100%; }
-      @media (max-width: 400px) { .lang-grid { grid-template-columns: 1fr; } } /* Adaptatif sur petit écran */
-
+      @media (max-width: 400px) { .lang-grid { grid-template-columns: 1fr; } } 
       .lang-btn { 
         padding: 15px 20px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.2); 
         border-radius: 12px; font-size: 14px; font-family: 'Montserrat'; font-weight: 500; cursor: pointer; 
@@ -118,55 +112,70 @@
       .lang-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: #F4D068; color: #F4D068; }
 
       /* =========================================
-         UI DE SCAN
+         UI DE SCAN & GALERIE
          ========================================= */
       #scan-message { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.95); color: var(--primary-green); padding: 15px 35px; border-radius: 50px; font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; text-align: center; white-space: nowrap; }
 
-      /* =========================================
-         NOUVEAU : GALERIE "MES SCANS" AVEC CADENAS
-         ========================================= */
       #gallery-overlay { 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 27000; display: none; 
         flex-direction: column; align-items: center; padding-top: 100px; overflow-y: auto;
-        /* Joli fond tropical sombre pour la galerie */
-        background: linear-gradient(180deg, rgba(26,60,52,0.85) 0%, rgba(10,25,20,0.95) 100%), url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=1600') center/cover;
-        background-attachment: fixed;
+        background: linear-gradient(180deg, rgba(26,60,52,0.85) 0%, rgba(10,25,20,0.95) 100%), url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=1600') center/cover; background-attachment: fixed;
       }
       #gallery-overlay h2 { font-size: 2.8em; margin-bottom: 40px; color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-      
       #gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 130px)); gap: 20px; justify-content: center; width: 90%; max-width: 800px; padding-bottom: 50px; }
       
       .gallery-item { width: 130px; height: 130px; background-color: #222; background-size: cover; background-position: center; border-radius: 20px; cursor: pointer; transition: 0.4s ease; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: 2px solid transparent; }
-      .gallery-item::after { content:''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.9) 100%); pointer-events: none; }
-      .gallery-item:hover { transform: translateY(-8px) scale(1.02); border-color: #F4D068; box-shadow: 0 15px 30px rgba(244, 208, 104, 0.2); }
+      .gallery-item.unlocked::after { content:''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.9) 100%); pointer-events: none; }
+      .gallery-item.unlocked:hover { transform: translateY(-8px) scale(1.02); border-color: #F4D068; box-shadow: 0 15px 30px rgba(244, 208, 104, 0.2); }
       .gallery-item-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 12px 10px; text-align: center; z-index: 2; }
       .gallery-item-overlay p { margin: 0; font-size: 12px; font-weight: 600; color: white; letter-spacing: 0.5px; }
 
-      /* Style spécial pour les cases "Cadenas / Verrouillé" */
-      .gallery-item.locked { 
-        background-color: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); 
-        display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        cursor: not-allowed; box-shadow: none; 
-      }
-      .gallery-item.locked::after { display: none; }
-      .gallery-item.locked:hover { transform: none; border-color: rgba(255,255,255,0.2); box-shadow: none; }
-      .locked-icon { font-size: 28px; opacity: 0.3; margin-bottom: 8px; filter: grayscale(100%); }
-      .locked-text { font-size: 11px; opacity: 0.4; color: white; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+      .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 60, 52, 0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; transition: 0.3s; }
+      .gallery-item.locked { cursor: not-allowed; }
+      .gallery-item.locked:hover .locked-overlay { background: rgba(26, 60, 52, 0.95); }
+      .locked-icon { font-size: 28px; opacity: 0.6; margin-bottom: 8px; }
+      .locked-text { font-size: 11px; opacity: 0.8; color: white; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
 
-      #reset-btn { margin-top: 20px; margin-bottom: 50px; padding: 10px 20px; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); border-radius: 30px; font-size: 12px; cursor: pointer; transition: 0.3s; }
+      #reset-btn { margin-top: 20px; margin-bottom: 50px; padding: 10px 20px; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); border-radius: 30px; font-size: 12px; font-family: 'Montserrat'; cursor: pointer; transition: 0.3s; }
       #reset-btn:hover { background: rgba(255,255,255,0.1); color: white; }
 
       /* =========================================
-         PAGES DE CONTENU (Vidéo & OK)
+         PAGES DE CONTENU
          ========================================= */
       #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 28000; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
       video#myVideo { width: 90%; max-width: 800px; max-height: 70vh; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); background: #000; position: relative !important; z-index: 2 !important; }
-      
-      #ok-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-green); z-index: 29000; flex-direction: column; align-items: center; justify-content: center; color: white; }
-      #ok-page h1 { font-size: 6em; font-weight: 700; margin-bottom: 40px; color: #F4D068; text-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-      .close-btn { margin-top: 30px; padding: 15px 35px; background: white; color: var(--primary-green); border: none; border-radius: 30px; font-size: 13px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; }
-      .close-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(0,0,0,0.3); }
+      #info-page-barong { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); z-index: 29000; flex-direction: column; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+      .info-header { position: relative; width: 100%; height: 50vh; min-height: 350px; background: url('https://images.unsplash.com/photo-1604999333679-b86d54738315?q=80&w=1600&auto=format&fit=crop') center/cover; background-attachment: fixed; display: flex; align-items: flex-end; padding: 50px 20px; }
+      .info-header::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(180deg, transparent 0%, rgba(26,60,52,0.95) 100%); }
+      .info-title { position: relative; z-index: 1; color: white; max-width: 800px; margin: 0 auto; width: 100%; }
+      .info-title h1 { font-size: 4em; text-shadow: 0 4px 15px rgba(0,0,0,0.5); color: #F4D068; margin-bottom: 5px; }
+      .info-title p { font-size: 1.1em; opacity: 0.9; margin: 0; font-family: 'Montserrat'; text-transform: uppercase; letter-spacing: 3px; }
+      
+      .info-content { max-width: 800px; margin: 0 auto; padding: 60px 20px 120px 20px; color: var(--text-dark); font-family: 'Montserrat', sans-serif; line-height: 1.8; font-size: 1.15em; }
+      .info-content h2 { font-size: 2.2em; color: var(--primary-green); margin: 50px 0 20px 0; }
+      .info-content p { margin-bottom: 25px; }
+      p.first-para::first-letter { font-family: 'Playfair Display', serif; float: left; font-size: 3.5em; line-height: 0.8; padding-top: 4px; padding-right: 8px; color: var(--primary-green); font-weight: bold; }
+      .info-quote { background: rgba(26,60,52,0.05); padding: 30px; border-left: 5px solid #F4D068; border-radius: 0 20px 20px 0; margin: 40px 0; font-style: italic; color: var(--primary-green); font-size: 1.1em; font-family: 'Playfair Display', serif; }
+
+      @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+      .info-content.animate-in > * { opacity: 0; animation: fadeInUp 0.8s ease forwards; }
+      .info-content.animate-in > *:nth-child(1) { animation-delay: 0.1s; }
+      .info-content.animate-in > *:nth-child(2) { animation-delay: 0.2s; }
+      .info-content.animate-in > *:nth-child(3) { animation-delay: 0.3s; }
+      .info-content.animate-in > *:nth-child(4) { animation-delay: 0.4s; }
+      .info-content.animate-in > *:nth-child(5) { animation-delay: 0.5s; }
+      .info-content.animate-in > *:nth-child(6) { animation-delay: 0.6s; }
+
+      .info-image-wrapper { margin: 40px 0; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.15); position: relative; transition: 0.4s ease; }
+      .info-image-wrapper:hover { transform: translateY(-5px); box-shadow: 0 20px 45px rgba(26,60,52,0.25); }
+      .info-image-wrapper img { width: 100%; display: block; transition: transform 0.8s ease; }
+      .info-image-wrapper:hover img { transform: scale(1.03); }
+      .image-caption { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 15px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); color: white; font-size: 0.95em; font-family: 'Montserrat', sans-serif; opacity: 0; transform: translateY(20px); transition: 0.4s ease; }
+      .info-image-wrapper:hover .image-caption { opacity: 1; transform: translateY(0); }
+
+      .floating-close-btn { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 16px 40px; background: var(--primary-green); color: #F4D068; border: none; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); transition: 0.3s; z-index: 30000; }
+      .floating-close-btn:hover { background: #132b25; transform: translate(-50%, -3px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
     </style>
   </head>
 
@@ -176,22 +185,22 @@
       <div class="auth-overlay"></div>
       <div class="glass-box">
         <div class="logo-placeholder">🌴</div>
-        <h2 id="auth-title">Connexion</h2>
-        <input type="email" id="auth-email" class="auth-input" placeholder="Adresse Email">
-        <input type="password" id="auth-password" class="auth-input" placeholder="Mot de passe">
-        <button class="start-btn" style="width: 100%; margin-top: 10px;" onclick="handleAuth()" id="auth-submit-btn">Se connecter</button>
-        <p class="auth-switch" onclick="toggleAuthMode()" id="auth-switch-text">Pas encore de compte ? S'inscrire</p>
+        <h2 id="auth-title" data-i18n="auth_title_login">Connexion</h2>
+        <input type="email" id="auth-email" class="auth-input" data-i18n-placeholder="auth_email" placeholder="Adresse Email">
+        <input type="password" id="auth-password" class="auth-input" data-i18n-placeholder="auth_pass" placeholder="Mot de passe">
+        <button class="start-btn" style="width: 100%; margin-top: 10px;" onclick="handleAuth()" id="auth-submit-btn" data-i18n="auth_btn_login">Se connecter</button>
+        <p class="auth-switch" onclick="toggleAuthMode()" id="auth-switch-text" data-i18n="auth_switch_to_signup">Pas encore de compte ? S'inscrire</p>
       </div>
     </div>
 
     <div id="burger-icon" onclick="toggleMenu()"><span></span><span></span><span></span></div>
 
     <div id="side-menu">
-      <a href="#" onclick="navTo('home')">🏠 Accueil</a>
-      <a href="#" onclick="navTo('language')">🌍 Langues</a>
-      <a href="#" onclick="navTo('scan')">📷 Scan AR</a>
-      <a href="#" onclick="navTo('video')">🎬 Mes Scans</a>
-      <a href="#" onclick="logout()" style="color: #F4D068; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto; margin-bottom: 20px;">🚪 Déconnexion</a>
+      <a href="#" onclick="navTo('home')" data-i18n="menu_home">🏠 Accueil</a>
+      <a href="#" onclick="navTo('language')" data-i18n="menu_lang">🌍 Langues</a>
+      <a href="#" onclick="navTo('scan')" data-i18n="menu_scan">📷 Scan AR</a>
+      <a href="#" onclick="navTo('video')" data-i18n="menu_gallery">🎬 Mes Scans</a>
+      <a href="#" onclick="logout()" style="color: #F4D068; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto; margin-bottom: 20px;" data-i18n="menu_logout">🚪 Déconnexion</a>
     </div>
 
     <div id="presentation-page">
@@ -199,37 +208,36 @@
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <div class="logo-placeholder">🌴</div>
-          <h1>Bali Explorer</h1>
-          <p>Plongez au cœur de l'île des Dieux. Découvrez les secrets de Bali à travers une expérience immersive en Réalité Augmentée.</p>
-          <button class="start-btn" onclick="goToLanguages()">Scanner maintenant</button>
+          <h1 data-i18n="landing_title">Bali Explorer</h1>
+          <p data-i18n="landing_subtitle">Plongez au cœur de l'île des Dieux. Découvrez les secrets de Bali à travers une expérience immersive en Réalité Augmentée.</p>
+          <button class="start-btn" onclick="goToLanguages()" data-i18n="btn_scan">Scanner maintenant</button>
         </div>
       </div>
       <div class="content-section">
         <div class="text-box">
-          <h2>Découvrez la culture</h2>
-          <p>S'inscrivant dans une tradition millénaire, la culture balinaise fascine par ses rituels colorés, ses danses envoûtantes et ses temples majestueux disséminés à travers l'île.</p>
+          <h2 data-i18n="sec1_title">Découvrez la culture</h2>
+          <p data-i18n="sec1_text">S'inscrivant dans une tradition millénaire, la culture balinaise fascine par ses rituels colorés, ses danses envoûtantes et ses temples majestueux disséminés à travers l'île.</p>
         </div>
         <div class="img-box"><img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=800&auto=format&fit=crop" alt="Temple Bali"></div>
       </div>
       <div class="content-section reverse">
         <div class="text-box">
-          <h2>Une nature époustouflante</h2>
-          <p>Des rizières en terrasses verdoyantes d'Ubud aux plages de sable fin, laissez-vous surprendre par la diversité et la beauté préservée des paysages de l'île des Dieux.</p>
+          <h2 data-i18n="sec2_title">Une nature époustouflante</h2>
+          <p data-i18n="sec2_text">Des rizières en terrasses verdoyantes d'Ubud aux plages de sable fin, laissez-vous surprendre par la diversité et la beauté préservée des paysages de l'île des Dieux.</p>
         </div>
         <div class="img-box"><img src="https://images.unsplash.com/photo-1554481923-a6918bd997bc?q=80&w=800&auto=format&fit=crop" alt="Nature Bali"></div>
       </div>
       <div class="cta-section">
-        <h2>Prêt à donner vie à vos images ?</h2>
-        <button class="start-btn" style="background: white; color: var(--primary-green);" onclick="goToLanguages()">Scanner maintenant</button>
+        <h2 data-i18n="cta_title">Prêt à donner vie à vos images ?</h2>
+        <button class="start-btn" style="background: white; color: var(--primary-green);" onclick="goToLanguages()" data-i18n="btn_scan">Scanner maintenant</button>
       </div>
     </div>
 
     <div id="welcome-overlay">
       <div class="glass-box" style="padding: 40px 30px;">
         <div class="logo-placeholder" style="margin: 0 auto 20px auto; width: 60px; height: 60px; font-size: 24px;">🌍</div>
-        <h2 style="font-size: 1.5em; margin-bottom: 5px;">CHOIX DE LA LANGUE</h2>
-        <p style="opacity: 0.7; font-size: 13px; margin-bottom: 25px;">Sélectionnez votre langue pour l'expérience</p>
-        
+        <h2 style="font-size: 1.5em; margin-bottom: 5px;" data-i18n="lang_title">CHOIX DE LA LANGUE</h2>
+        <p style="opacity: 0.7; font-size: 13px; margin-bottom: 25px;" data-i18n="lang_subtitle">Sélectionnez votre langue pour l'expérience</p>
         <div class="lang-grid">
           <button class="lang-btn" onclick="setLanguageAndStart('fr')"><img src="https://flagcdn.com/w40/fr.png" width="24"> Français</button>
           <button class="lang-btn" onclick="setLanguageAndStart('en')"><img src="https://flagcdn.com/w40/us.png" width="24"> English</button>
@@ -241,22 +249,51 @@
       </div>
     </div>
 
-    <div id="scan-message"></div>
+    <div id="scan-message" data-i18n="scan_msg">Visez l'image pour commencer</div>
 
     <div id="gallery-overlay">
-      <h2 id="gallery-title">Mes Scans</h2>
+      <h2 id="gallery-title" data-i18n="gal_title">Mes Scans</h2>
       <div id="gallery-grid"></div>
-      <button id="reset-btn" style="display:none;" onclick="resetGallery()">Réinitialiser ma progression</button>
+      <button id="reset-btn" style="display:none;" onclick="resetGallery()" data-i18n="gal_reset">Réinitialiser ma progression</button>
     </div>
 
     <div id="video-overlay">
       <video id="myVideo" playsinline webkit-playsinline controls loop></video>
-      <button class="close-btn" onclick="closeVideoPlayer()">RETOUR AU SCAN</button>
+      <button class="floating-close-btn" style="position:relative; margin-top:20px; bottom:auto; left:auto; transform:none;" onclick="closeVideoPlayer()" data-i18n="btn_back">Retour au scan</button>
     </div>
 
-    <div id="ok-page">
-        <h1>OK</h1>
-        <button class="close-btn" onclick="closeOKPage()">RETOUR AU SCAN</button>
+    <div id="info-page-barong">
+        <div class="info-header">
+            <div class="info-title">
+                <p data-i18n="barong_tag">Créature Mythologique</p>
+                <h1 data-i18n="barong_title">Le Barong</h1>
+            </div>
+        </div>
+        
+        <div class="info-content">
+            <p class="first-para" data-i18n="barong_p1">Dans la mythologie balinaise, le <strong>Barong</strong> est le roi des esprits, le chef suprême des forces du bien et l'ennemi juré de Rangda, la reine démoniaque et mère de tous les gardes-esprits.</p>
+            
+            <div class="info-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1555580280-9b48b594b29f?q=80&w=800&auto=format&fit=crop" alt="Culture Balinaise">
+                <div class="image-caption" data-i18n="barong_img1_caption">Le majestueux Barong, protecteur des divinités.</div>
+            </div>
+
+            <div class="info-quote" data-i18n="barong_quote">"Le Barong ne représente pas seulement une créature, mais l'équilibre fondamental de l'univers : le Dharma (le bien) qui s'oppose éternellement à l'Adharma (le chaos)."</div>
+            
+            <h2 data-i18n="barong_h2_1">L'esprit protecteur des villages</h2>
+            <p data-i18n="barong_p2">Le Barong est considéré comme l'esprit tutélaire de l'île de Bali. Chaque village ou région possède son propre esprit protecteur, qui prend souvent la forme d'un animal différent.</p>
+            <p data-i18n="barong_p3">La forme la plus célèbre et vénérée est le <em>Barong Ket</em> (le lion), mais il existe également le <em>Barong Celeng</em> (le sanglier), le <em>Barong Macan</em> (le tigre) ou encore le <em>Barong Naga</em> (le dragon).</p>
+            
+            <div class="info-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1531816458000-802c38ce713a?q=80&w=800&auto=format&fit=crop" alt="Temple Bali">
+                <div class="image-caption" data-i18n="barong_img2_caption">Les sculptures sacrées gardant les entrées des temples.</div>
+            </div>
+
+            <h2 data-i18n="barong_h2_2">La danse sacrée</h2>
+            <p data-i18n="barong_p4">La danse du Barong est l'une des représentations les plus sacrées et populaires de la culture balinaise. Elle met en scène de manière spectaculaire le combat cosmique entre le Barong et Rangda.</p>
+            <p data-i18n="barong_p5">Le costume massif du Barong est animé par deux danseurs hautement synchronisés, un peu à la manière des célèbres dragons chinois. Lors de cette danse rituelle, il est fréquent que les participants entrent dans un état de transe profonde, protégés par la puissante magie émanant du Barong.</p>
+        </div>
+        <button class="floating-close-btn" onclick="closeInfoPage()" data-i18n="barong_back">Retour à l'expérience</button>
     </div>
 
     <a-scene 
@@ -264,51 +301,229 @@
       mindar-image="imageTargetSrc: ./assets/targets/targets.mind; autoStart: false; uiScanning: yes;" 
       embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      
       <a-entity class="ar-target" mindar-image-target="targetIndex: 0" data-index="0"></a-entity>
       <a-entity class="ar-target" mindar-image-target="targetIndex: 1" data-index="1"></a-entity>
     </a-scene>
 
     <script>
-      // --- LOGIQUE D'AUTHENTIFICATION ---
-      let isSignUp = false;
-      const authPage = document.getElementById('auth-page');
+      // ==========================================
+      // DICTIONNAIRE DE TRADUCTIONS (i18n)
+      // ==========================================
+      const translations = {
+        fr: {
+          auth_title_login: "Connexion", auth_title_signup: "Créer un compte", auth_email: "Adresse Email", auth_pass: "Mot de passe",
+          auth_btn_login: "Se connecter", auth_btn_signup: "S'inscrire",
+          auth_switch_to_signup: "Pas encore de compte ? S'inscrire", auth_switch_to_login: "Déjà un compte ? Se connecter",
+          menu_home: "🏠 Accueil", menu_lang: "🌍 Langues", menu_scan: "📷 Scan AR", menu_gallery: "🎬 Mes Scans", menu_logout: "🚪 Déconnexion",
+          landing_title: "Bali Explorer", landing_subtitle: "Plongez au cœur de l'île des Dieux. Découvrez les secrets de Bali à travers une expérience immersive en Réalité Augmentée.",
+          btn_scan: "Scanner maintenant", sec1_title: "Découvrez la culture",
+          sec1_text: "S'inscrivant dans une tradition millénaire, la culture balinaise fascine par ses rituels colorés, ses danses envoûtantes et ses temples majestueux disséminés à travers l'île.",
+          sec2_title: "Une nature époustouflante",
+          sec2_text: "Des rizières en terrasses verdoyantes d'Ubud aux plages de sable fin, laissez-vous surprendre par la diversité et la beauté préservée des paysages de l'île des Dieux.",
+          cta_title: "Prêt à donner vie à vos images ?", lang_title: "CHOIX DE LA LANGUE", lang_subtitle: "Sélectionnez votre langue pour l'expérience",
+          scan_msg: "Visez l'image pour commencer", gal_title: "Mes Scans", gal_reset: "Réinitialiser ma progression", btn_back: "Retour au scan",
+          barong_tag: "Créature Mythologique", barong_title: "Le Barong",
+          barong_p1: "Dans la mythologie balinaise, le <strong>Barong</strong> est le roi des esprits, le chef suprême des forces du bien et l'ennemi juré de Rangda, la reine démoniaque et mère de tous les gardes-esprits.",
+          barong_quote: "\"Le Barong ne représente pas seulement une créature, mais l'équilibre fondamental de l'univers : le Dharma (le bien) qui s'oppose éternellement à l'Adharma (le chaos).\"",
+          barong_h2_1: "L'esprit protecteur des villages",
+          barong_p2: "Le Barong est considéré comme l'esprit tutélaire de l'île de Bali. Chaque village ou région possède son propre esprit protecteur, qui prend souvent la forme d'un animal différent.",
+          barong_p3: "La forme la plus célèbre et vénérée est le <em>Barong Ket</em> (le lion), mais il existe également le <em>Barong Celeng</em> (le sanglier), le <em>Barong Macan</em> (le tigre) ou encore le <em>Barong Naga</em> (le dragon).",
+          barong_h2_2: "La danse sacrée",
+          barong_p4: "La danse du Barong est l'une des représentations les plus sacrées et populaires de la culture balinaise. Elle met en scène de manière spectaculaire le combat cosmique entre le Barong et Rangda.",
+          barong_p5: "Le costume massif du Barong est animé par deux danseurs hautement synchronisés, un peu à la manière des célèbres dragons chinois. Lors de cette danse rituelle, il est fréquent que les participants entrent dans un état de transe profonde, protégés par la puissante magie émanant du Barong.",
+          barong_img1_caption: "Le majestueux Barong, protecteur des divinités.", barong_img2_caption: "Les sculptures sacrées gardant les entrées des temples.",
+          barong_back: "Retour à l'expérience", alert_fill: "Veuillez remplir tous les champs.", alert_no_acc: "Aucun compte trouvé. Redirection vers l'inscription.",
+          alert_wrong: "Email ou mot de passe incorrect.", confirm_reset: "Réinitialiser tous vos scans ?", alert_locked: "🔒 Ce scan est verrouillé ! Trouvez l'image dans le monde réel et flashez-la pour l'ouvrir.",
+          item_video: "Vidéo Bali", item_barong: "Le Barong", item_scan: "Scan", item_discovery: "Découverte"
+        },
+        en: {
+          auth_title_login: "Login", auth_title_signup: "Create Account", auth_email: "Email Address", auth_pass: "Password",
+          auth_btn_login: "Sign In", auth_btn_signup: "Sign Up",
+          auth_switch_to_signup: "No account yet? Sign up", auth_switch_to_login: "Already have an account? Sign in",
+          menu_home: "🏠 Home", menu_lang: "🌍 Languages", menu_scan: "📷 AR Scan", menu_gallery: "🎬 My Scans", menu_logout: "🚪 Logout",
+          landing_title: "Bali Explorer", landing_subtitle: "Dive into the heart of the Island of Gods. Discover the secrets of Bali through an immersive Augmented Reality experience.",
+          btn_scan: "Scan Now", sec1_title: "Discover the Culture",
+          sec1_text: "Rooted in a millennial tradition, Balinese culture fascinates with its colorful rituals, spellbinding dances, and majestic temples scattered across the island.",
+          sec2_title: "Breathtaking Nature",
+          sec2_text: "From the lush green rice terraces of Ubud to the fine sandy beaches, let yourself be surprised by the diversity and preserved beauty of the Island of the Gods.",
+          cta_title: "Ready to bring your images to life?", lang_title: "CHOOSE LANGUAGE", lang_subtitle: "Select your language for the experience",
+          scan_msg: "Aim at the image to start", gal_title: "My Scans", gal_reset: "Reset my progress", btn_back: "Back to Scan",
+          barong_tag: "Mythological Creature", barong_title: "The Barong",
+          barong_p1: "In Balinese mythology, the <strong>Barong</strong> is the king of the spirits, supreme leader of the forces of good, and sworn enemy of Rangda, the demon queen.",
+          barong_quote: "\"The Barong represents not just a creature, but the fundamental balance of the universe: Dharma (good) eternally opposing Adharma (chaos).\"",
+          barong_h2_1: "The Protector Spirit of Villages",
+          barong_p2: "The Barong is considered the tutelary spirit of Bali. Each village or region has its own protective spirit, often taking the form of a different animal.",
+          barong_p3: "The most famous form is the <em>Barong Ket</em> (lion), but there are also the <em>Barong Celeng</em> (boar), <em>Barong Macan</em> (tiger), and <em>Barong Naga</em> (dragon).",
+          barong_h2_2: "The Sacred Dance",
+          barong_p4: "The Barong dance is one of the most sacred and popular performances in Balinese culture, spectacularly staging the cosmic battle between Barong and Rangda.",
+          barong_p5: "The massive Barong costume is animated by two highly synchronized dancers. During this ritual dance, participants often enter a deep trance, protected by Barong's magic.",
+          barong_img1_caption: "The majestic Barong, protector of the deities.", barong_img2_caption: "Sacred sculptures guarding temple entrances.",
+          barong_back: "Back to Experience", alert_fill: "Please fill in all fields.", alert_no_acc: "No account found. Redirecting to sign up.",
+          alert_wrong: "Incorrect email or password.", confirm_reset: "Reset all your scans?", alert_locked: "🔒 This scan is locked! Find the image in the real world and scan it to open.",
+          item_video: "Bali Video", item_barong: "The Barong", item_scan: "Scan", item_discovery: "Discovery"
+        },
+        es: {
+          auth_title_login: "Iniciar sesión", auth_title_signup: "Crear una cuenta", auth_email: "Correo electrónico", auth_pass: "Contraseña",
+          auth_btn_login: "Entrar", auth_btn_signup: "Registrarse",
+          auth_switch_to_signup: "¿No tienes cuenta? Regístrate", auth_switch_to_login: "¿Ya tienes cuenta? Iniciar sesión",
+          menu_home: "🏠 Inicio", menu_lang: "🌍 Idiomas", menu_scan: "📷 Escanear AR", menu_gallery: "🎬 Mis Escaneos", menu_logout: "🚪 Cerrar sesión",
+          landing_title: "Bali Explorer", landing_subtitle: "Sumérgete en el corazón de la Isla de los Dioses. Descubre los secretos de Bali a través de la Realidad Aumentada.",
+          btn_scan: "Escanear ahora", sec1_title: "Descubre la cultura",
+          sec1_text: "Arraigada en una tradición milenaria, la cultura balinesa fascina con sus coloridos rituales y majestuosos templos.",
+          sec2_title: "Naturaleza impresionante",
+          sec2_text: "Desde las verdes terrazas de arroz de Ubud hasta las playas de arena fina, déjate sorprender por la belleza de Bali.",
+          cta_title: "¿Listo para dar vida a tus imágenes?", lang_title: "SELECCIONA TU IDIOMA", lang_subtitle: "Elige un idioma para la experiencia",
+          scan_msg: "Apunta a la imagen para empezar", gal_title: "Mis Escaneos", gal_reset: "Restablecer mi progreso", btn_back: "Volver a escanear",
+          barong_tag: "Criatura Mitologica", barong_title: "El Barong",
+          barong_p1: "En la mitología balinesa, el <strong>Barong</strong> es el rey de los espíritus y líder de las fuerzas del bien.",
+          barong_quote: "\"El Barong representa el equilibrio fundamental del universo: el Dharma (el bien) que se opone al Adharma (el caos).\"",
+          barong_h2_1: "El espíritu protector",
+          barong_p2: "El Barong es el espíritu protector de Bali. Cada pueblo tiene el suyo, a menudo en forma de diferentes animales.",
+          barong_p3: "La forma más famosa es el <em>Barong Ket</em> (león), pero también existe el jabalí, el tigre o el dragón.",
+          barong_h2_2: "La danza sagrada",
+          barong_p4: "La danza del Barong escenifica espectacularmente la batalla cósmica entre Barong y Rangda.",
+          barong_p5: "El traje es animado por dos bailarines. Durante el ritual, los participantes suelen entrar en un trance profundo.",
+          barong_img1_caption: "El majestuoso Barong, protector de las deidades.", barong_img2_caption: "Esculturas sagradas que custodian los templos.",
+          barong_back: "Volver a la experiencia", alert_fill: "Por favor, completa todos los campos.", alert_no_acc: "No se encontró cuenta. Redirigiendo a registro.",
+          alert_wrong: "Correo o contraseña incorrectos.", confirm_reset: "¿Restablecer todos tus escaneos?", alert_locked: "🔒 ¡Este escaneo está bloqueado! Encuentra la imagen en el mundo real.",
+          item_video: "Video Bali", item_barong: "El Barong", item_scan: "Escanear", item_discovery: "Descubrimiento"
+        },
+        id: {
+          auth_title_login: "Masuk", auth_title_signup: "Daftar", auth_email: "Alamat Email", auth_pass: "Kata Sandi",
+          auth_btn_login: "Masuk", auth_btn_signup: "Mendaftar",
+          auth_switch_to_signup: "Belum punya akun? Daftar", auth_switch_to_login: "Sudah punya akun? Masuk",
+          menu_home: "🏠 Beranda", menu_lang: "🌍 Bahasa", menu_scan: "📷 Pindai AR", menu_gallery: "🎬 Pemindaian Saya", menu_logout: "🚪 Keluar",
+          landing_title: "Bali Explorer", landing_subtitle: "Selami jantung Pulau Dewata. Temukan rahasia Bali melalui pengalaman Augmented Reality.",
+          btn_scan: "Pindai sekarang", sec1_title: "Temukan Budaya",
+          sec1_text: "Berakar pada tradisi ribuan tahun, budaya Bali mempesona dengan ritual warna-warni dan pura yang megah.",
+          sec2_title: "Alam yang Menakjubkan",
+          sec2_text: "Dari terasering sawah hijau di Ubud hingga pantai berpasir halus, biarkan diri Anda terkejut oleh keindahan Bali.",
+          cta_title: "Siap menghidupkan gambar Anda?", lang_title: "PILIH BAHASA", lang_subtitle: "Pilih bahasa untuk pengalaman Anda",
+          scan_msg: "Arahkan ke gambar untuk memulai", gal_title: "Pemindaian Saya", gal_reset: "Atur ulang kemajuan", btn_back: "Kembali memindai",
+          barong_tag: "Makhluk Mitologi", barong_title: "Barong",
+          barong_p1: "Dalam mitologi Bali, <strong>Barong</strong> adalah raja roh, pemimpin kekuatan kebaikan.",
+          barong_quote: "\"Barong mewakili keseimbangan alam semesta: Dharma (kebaikan) yang menentang Adharma (kekacauan).\"",
+          barong_h2_1: "Roh Pelindung Desa",
+          barong_p2: "Barong dianggap sebagai roh pelindung Bali. Setiap desa memiliki roh pelindungnya sendiri.",
+          barong_p3: "Bentuk yang paling terkenal adalah <em>Barong Ket</em> (singa), tetapi ada juga babi hutan, harimau, atau naga.",
+          barong_h2_2: "Tarian Suci",
+          barong_p4: "Tari Barong secara spektakuler mementaskan pertempuran kosmik antara Barong dan Rangda.",
+          barong_p5: "Kostum ini digerakkan oleh dua penari. Selama ritual, para peserta sering mengalami kesurupan.",
+          barong_img1_caption: "Barong yang megah, pelindung para dewa.", barong_img2_caption: "Patung suci yang menjaga pintu masuk pura.",
+          barong_back: "Kembali ke pengalaman", alert_fill: "Harap isi semua kolom.", alert_no_acc: "Akun tidak ditemukan. Mengarahkan ke pendaftaran.",
+          alert_wrong: "Email atau sandi salah.", confirm_reset: "Atur ulang semua pindaian?", alert_locked: "🔒 Terkunci! Temukan gambar di dunia nyata untuk membukanya.",
+          item_video: "Video Bali", item_barong: "Barong", item_scan: "Pindai", item_discovery: "Penemuan"
+        },
+        de: {
+          auth_title_login: "Anmelden", auth_title_signup: "Konto erstellen", auth_email: "E-Mail-Adresse", auth_pass: "Passwort",
+          auth_btn_login: "Einloggen", auth_btn_signup: "Registrieren",
+          auth_switch_to_signup: "Noch kein Konto? Registrieren", auth_switch_to_login: "Bereits ein Konto? Anmelden",
+          menu_home: "🏠 Startseite", menu_lang: "🌍 Sprachen", menu_scan: "📷 AR-Scan", menu_gallery: "🎬 Meine Scans", menu_logout: "🚪 Abmelden",
+          landing_title: "Bali Explorer", landing_subtitle: "Tauchen Sie ein in das Herz der Götterinsel. Entdecken Sie Balis Geheimnisse durch AR.",
+          btn_scan: "Jetzt scannen", sec1_title: "Die Kultur entdecken",
+          sec1_text: "Die balinesische Kultur fasziniert mit ihren farbenfrohen Ritualen und majestätischen Tempeln.",
+          sec2_title: "Atemberaubende Natur",
+          sec2_text: "Von den Reisterrassen in Ubud bis zu den Sandstränden, lassen Sie sich von Balis Schönheit überraschen.",
+          cta_title: "Bereit, Ihre Bilder zum Leben zu erwecken?", lang_title: "SPRACHE WÄHLEN", lang_subtitle: "Wählen Sie Ihre Sprache für das Erlebnis",
+          scan_msg: "Auf das Bild zielen, um zu starten", gal_title: "Meine Scans", gal_reset: "Fortschritt zurücksetzen", btn_back: "Zurück zum Scan",
+          barong_tag: "Mythologische Kreatur", barong_title: "Der Barong",
+          barong_p1: "In der balinesischen Mythologie ist der <strong>Barong</strong> der König der Geister und der Anführer des Guten.",
+          barong_quote: "\"Der Barong repräsentiert das grundlegende Gleichgewicht des Universums: Dharma (Gut) gegen Adharma (Chaos).\"",
+          barong_h2_1: "Der Schutzgeist der Dörfer",
+          barong_p2: "Der Barong gilt als Schutzgeist von Bali. Jedes Dorf hat seinen eigenen, oft in Form verschiedener Tiere.",
+          barong_p3: "Die bekannteste Form ist der <em>Barong Ket</em> (Löwe), aber es gibt auch Wildschwein, Tiger oder Drache.",
+          barong_h2_2: "Der heilige Tanz",
+          barong_p4: "Der Barong-Tanz inszeniert auf spektakuläre Weise den kosmischen Kampf zwischen Barong und Rangda.",
+          barong_p5: "Das Kostüm wird von zwei Tänzern animiert. Während des Rituals fallen die Teilnehmer oft in Trance.",
+          barong_img1_caption: "Der majestätische Barong, Beschützer der Gottheiten.", barong_img2_caption: "Heilige Skulpturen bewachen die Tempeleingänge.",
+          barong_back: "Zurück zum Erlebnis", alert_fill: "Bitte füllen Sie alle Felder aus.", alert_no_acc: "Kein Konto gefunden. Weiterleitung zur Registrierung.",
+          alert_wrong: "Falsche E-Mail oder Passwort.", confirm_reset: "Alle Scans zurücksetzen?", alert_locked: "🔒 Dieser Scan ist gesperrt! Finde das Bild in der realen Welt.",
+          item_video: "Bali Video", item_barong: "Der Barong", item_scan: "Scan", item_discovery: "Entdeckung"
+        },
+        it: {
+          auth_title_login: "Accedi", auth_title_signup: "Crea un account", auth_email: "Indirizzo Email", auth_pass: "Password",
+          auth_btn_login: "Entra", auth_btn_signup: "Registrati",
+          auth_switch_to_signup: "Non hai un account? Registrati", auth_switch_to_login: "Hai già un account? Accedi",
+          menu_home: "🏠 Home", menu_lang: "🌍 Lingue", menu_scan: "📷 Scansiona AR", menu_gallery: "🎬 Le mie scansioni", menu_logout: "🚪 Esci",
+          landing_title: "Bali Explorer", landing_subtitle: "Tuffati nel cuore dell'Isola degli Dei. Scopri i segreti di Bali attraverso la Realtà Aumentata.",
+          btn_scan: "Scansiona ora", sec1_title: "Scopri la cultura",
+          sec1_text: "Radicata in una tradizione millenaria, la cultura balinese affascina con i suoi rituali colorati e templi maestosi.",
+          sec2_title: "Natura mozzafiato",
+          sec2_text: "Dalle terrazze di riso di Ubud alle spiagge di sabbia fine, lasciati sorprendere dalla bellezza di Bali.",
+          cta_title: "Pronto a dare vita alle tue immagini?", lang_title: "SCEGLI LA LINGUA", lang_subtitle: "Seleziona la tua lingua per l'esperienza",
+          scan_msg: "Punta l'immagine per iniziare", gal_title: "Le mie scansioni", gal_reset: "Ripristina i miei progressi", btn_back: "Torna alla scansione",
+          barong_tag: "Creatura Mitologica", barong_title: "Il Barong",
+          barong_p1: "Nella mitologia balinese, il <strong>Barong</strong> è il re degli spiriti e il leader delle forze del bene.",
+          barong_quote: "\"Il Barong rappresenta l'equilibrio fondamentale dell'universo: il Dharma (il bene) che si oppone all'Adharma (il caos).\"",
+          barong_h2_1: "Lo spirito protettore",
+          barong_p2: "Il Barong è considerato lo spirito protettore di Bali. Ogni villaggio ha il proprio, spesso a forma di animale.",
+          barong_p3: "La forma più famosa è il <em>Barong Ket</em> (leone), ma ci sono anche il cinghiale, la tigre o il drago.",
+          barong_h2_2: "La danza sacra",
+          barong_p4: "La danza del Barong mette in scena in modo spettacolare la battaglia cosmica tra Barong e Rangda.",
+          barong_p5: "Il costume è animato da due ballerini. Durante il rituale, i partecipanti entrano spesso in trance.",
+          barong_img1_caption: "Il maestoso Barong, protettore delle divinità.", barong_img2_caption: "Sculture sacre a guardia degli ingressi dei templi.",
+          barong_back: "Torna all'esperienza", alert_fill: "Si prega di compilare tutti i campi.", alert_no_acc: "Nessun account trovato. Reindirizzamento alla registrazione.",
+          alert_wrong: "Email o password errati.", confirm_reset: "Ripristinare tutte le scansioni?", alert_locked: "🔒 Scansione bloccata! Trova l'immagine nel mondo reale.",
+          item_video: "Video Bali", item_barong: "Il Barong", item_scan: "Scansione", item_discovery: "Scoperta"
+        }
+      };
 
+      // --- LOGIQUE GLOBALE ---
+      let userLang = localStorage.getItem('baliLang') || 'fr'; 
+      let isSignUp = false;
+      let cameraStarted = false;
+      let openedFromGallery = false;
+      const TOTAL_SCANS = 12; 
+      let unlockedVideos = JSON.parse(localStorage.getItem('baliUnlockedVideos')) || [];
+
+      // --- TRADUCTION DYNAMIQUE ---
+      function applyTranslations(lang) {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if(translations[lang] && translations[lang][key]) el.innerHTML = translations[lang][key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          if(translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
+        });
+        if(document.getElementById('gallery-overlay').style.display === 'flex') buildGallery();
+      }
+
+      // Applique la traduction au chargement
+      window.onload = () => applyTranslations(userLang);
+
+      // --- LOGIQUE D'AUTHENTIFICATION ---
+      const authPage = document.getElementById('auth-page');
       if (localStorage.getItem('baliUserLoggedIn') === 'true') { authPage.style.display = 'none'; }
 
       function toggleAuthMode() {
         isSignUp = !isSignUp;
-        document.getElementById('auth-title').innerText = isSignUp ? "Créer un compte" : "Connexion";
-        document.getElementById('auth-submit-btn').innerText = isSignUp ? "S'inscrire" : "Se connecter";
-        document.getElementById('auth-switch-text').innerText = isSignUp ? "Déjà un compte ? Se connecter" : "Pas encore de compte ? S'inscrire";
+        document.getElementById('auth-title').setAttribute('data-i18n', isSignUp ? 'auth_title_signup' : 'auth_title_login');
+        document.getElementById('auth-submit-btn').setAttribute('data-i18n', isSignUp ? 'auth_btn_signup' : 'auth_btn_login');
+        document.getElementById('auth-switch-text').setAttribute('data-i18n', isSignUp ? 'auth_switch_to_login' : 'auth_switch_to_signup');
+        applyTranslations(userLang); 
       }
 
       function handleAuth() {
         const email = document.getElementById('auth-email').value;
         const pass = document.getElementById('auth-password').value;
-        if (!email || !pass) { alert("Veuillez remplir tous les champs."); return; }
+        if (!email || !pass) { alert(translations[userLang].alert_fill); return; }
 
         if (isSignUp) {
-          localStorage.setItem('baliRegisteredEmail', email);
+          localStorage.setItem('baliRegisteredEmail', email); 
           localStorage.setItem('baliRegisteredPassword', pass);
-          localStorage.setItem('baliUserLoggedIn', 'true');
+          localStorage.setItem('baliUserLoggedIn', 'true'); 
           closeAuthPage();
         } else {
           const savedEmail = localStorage.getItem('baliRegisteredEmail');
           const savedPass = localStorage.getItem('baliRegisteredPassword');
-          if (!savedEmail) {
-            alert("Aucun compte trouvé. Redirection vers l'inscription.");
-            if (!isSignUp) toggleAuthMode();
-            return;
-          }
-          if (email === savedEmail && pass === savedPass) {
-            localStorage.setItem('baliUserLoggedIn', 'true');
-            closeAuthPage();
-          } else { alert("Email ou mot de passe incorrect."); }
+          if (!savedEmail) { alert(translations[userLang].alert_no_acc); if (!isSignUp) toggleAuthMode(); return; }
+          if (email === savedEmail && pass === savedPass) { localStorage.setItem('baliUserLoggedIn', 'true'); closeAuthPage(); } 
+          else { alert(translations[userLang].alert_wrong); }
         }
       }
 
-      function closeAuthPage() { authPage.style.opacity = '0'; setTimeout(() => { authPage.style.display = 'none'; }, 300); }
+      function closeAuthPage() { authPage.style.opacity = '0'; setTimeout(() => { authPage.style.display = 'none'; }, 400); }
       function logout() { localStorage.removeItem('baliUserLoggedIn'); window.location.reload(); }
 
       // --- LOGIQUE APPLICATION ---
@@ -319,19 +534,10 @@
       const galleryGrid = document.querySelector('#gallery-grid');
       const resetBtn = document.querySelector('#reset-btn');
       const videoOverlay = document.querySelector('#video-overlay');
-      const okPage = document.querySelector('#ok-page');
+      const infoPageBarong = document.querySelector('#info-page-barong');
       const video = document.querySelector('#myVideo');
       const sideMenu = document.querySelector('#side-menu');
       const sceneEl = document.querySelector('#ar-scene');
-      
-      let userLang = 'en';
-      let cameraStarted = false;
-      let openedFromGallery = false;
-
-      // NOUVEAU : Le nombre total de scans existants dans ton jeu (ex: 12 pour commencer)
-      const TOTAL_SCANS = 12; 
-
-      let unlockedVideos = JSON.parse(localStorage.getItem('baliUnlockedVideos')) || [];
 
       function unlockVideo(index) {
         if (!unlockedVideos.includes(index)) {
@@ -341,36 +547,29 @@
       }
 
       function resetGallery() {
-        if(confirm(userLang === 'fr' ? "Réinitialiser tous vos scans ?" : "Reset all your scans?")) {
-          localStorage.removeItem('baliUnlockedVideos');
-          unlockedVideos = [];
-          buildGallery(); 
+        if(confirm(translations[userLang].confirm_reset)) {
+          localStorage.removeItem('baliUnlockedVideos'); unlockedVideos = []; buildGallery(); 
         }
       }
 
-      // FONCTION GALERIE MISE À JOUR : Crée les cadenas pour les scans manquants
       function buildGallery() {
         galleryGrid.innerHTML = ''; 
-        
         for (let i = 0; i < TOTAL_SCANS; i++) {
           const item = document.createElement('div');
+          item.style.backgroundImage = `url('./assets/images/cible_${i}.jpg')`;
           
           if (unlockedVideos.includes(i)) {
-            // Si le scan est débloqué -> Affiche l'image et l'action
-            item.className = 'gallery-item';
-            item.style.backgroundImage = `url('./assets/images/cible_${i}.jpg')`; 
-            item.innerHTML = `<div class="gallery-item-overlay"><p>${i === 0 ? 'Vidéo Bali' : 'Page OK'}</p></div>`;
+            item.className = 'gallery-item unlocked';
+            let itemTitle = i === 0 ? translations[userLang].item_video : (i === 1 ? translations[userLang].item_barong : translations[userLang].item_discovery + ' ' + (i+1));
+            item.innerHTML = `<div class="gallery-item-overlay"><p>${itemTitle}</p></div>`;
             item.onclick = () => launchContent(i, true); 
           } else {
-            // Si le scan n'est pas encore trouvé -> Affiche un Cadenas
             item.className = 'gallery-item locked';
-            item.innerHTML = `<div class="locked-icon">🔒</div><div class="locked-text">Scan ${i + 1}</div>`;
+            item.innerHTML = `<div class="locked-overlay"><div class="locked-icon">🔒</div><div class="locked-text">${translations[userLang].item_scan} ${i + 1}</div></div>`;
+            item.onclick = () => { alert(translations[userLang].alert_locked); };
           }
-          
           galleryGrid.appendChild(item);
         }
-
-        // Affiche le bouton reset seulement s'il y a au moins 1 truc débloqué
         resetBtn.style.display = unlockedVideos.length > 0 ? 'block' : 'none';
       }
 
@@ -383,19 +582,23 @@
         galleryOverlay.style.display = 'none';
 
         if (index === 0) {
-          // On s'assure que si la langue est FR ou EN ça lance la bonne vidéo, sinon ça lance une vidéo par défaut
-          const safeLang = (userLang === 'fr' || userLang === 'en') ? userLang : 'en';
+          const safeLang = ['fr', 'en'].includes(userLang) ? userLang : 'en';
           video.src = `./assets/videos/video_${safeLang}.mp4`; 
           videoOverlay.style.display = 'flex';
-          video.load();
-          video.play();
-        } else if (index === 1) {
-          okPage.style.display = 'flex';
+          video.load(); video.play();
+        } 
+        else if (index === 1) {
+          infoPageBarong.style.display = 'flex';
+          infoPageBarong.scrollTop = 0; 
+          const content = infoPageBarong.querySelector('.info-content');
+          content.classList.remove('animate-in');
+          void content.offsetWidth; 
+          content.classList.add('animate-in');
         }
       }
 
       function closeVideoPlayer() { video.pause(); videoOverlay.style.display = 'none'; finalizeReturn(); }
-      function closeOKPage() { okPage.style.display = 'none'; finalizeReturn(); }
+      function closeInfoPage() { infoPageBarong.style.display = 'none'; finalizeReturn(); }
 
       function finalizeReturn() {
         if (openedFromGallery) { galleryOverlay.style.display = 'flex'; } 
@@ -406,7 +609,7 @@
         toggleMenu(); video.pause();
         if(page === 'home') { window.location.reload(); return; }
         
-        videoOverlay.style.display = 'none'; okPage.style.display = 'none';
+        videoOverlay.style.display = 'none'; infoPageBarong.style.display = 'none'; 
         scanMsg.style.display = 'none'; welcome.style.display = 'none';
         presentation.style.display = 'none'; galleryOverlay.style.display = 'none';
         
@@ -417,14 +620,16 @@
           if (scanUI) scanUI.style.display = 'block';
         } 
         else if (page === 'video') {
-          document.getElementById('gallery-title').innerText = (userLang === 'fr') ? "Mes Scans" : "My Scans";
           buildGallery(); galleryOverlay.style.display = 'flex';
         }
       }
 
       function setLanguageAndStart(lang) {
-        userLang = lang; welcome.style.display = 'none';
-        scanMsg.innerText = (lang === 'fr') ? "Visez l'image pour commencer" : "Scan the image to start";
+        userLang = lang;
+        localStorage.setItem('baliLang', lang); 
+        applyTranslations(lang); 
+        
+        welcome.style.display = 'none';
         scanMsg.style.display = 'block';
         
         if (!cameraStarted) {
